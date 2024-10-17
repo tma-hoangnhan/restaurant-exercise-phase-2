@@ -32,13 +32,13 @@ class DrinkServiceTest {
     }
 
     @Test
-    void testSave_success() {
+    void save_success() {
         drinkService.save(expected);
         Mockito.verify(drinkRepository).save(expected);
     }
 
     @Test
-    void testSave_itemNameHasAlreadyExisted() {
+    void save_itemNameHasAlreadyExisted() {
         Mockito.when(drinkRepository.findDrinkByName(expected.getName())).thenReturn(Optional.of(expected));
         ItemNameAlreadyExistedException result = Assertions.assertThrows(
                 ItemNameAlreadyExistedException.class,
@@ -48,7 +48,7 @@ class DrinkServiceTest {
     }
 
     @Test
-    void testFindById_found() {
+    void findById_found() {
         Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
 
         Drink actual = drinkService.findById(expected.getId());
@@ -60,26 +60,26 @@ class DrinkServiceTest {
     }
 
     @Test
-    void testFindById_notFound() {
+    void findById_notFound() {
         NoItemFoundException result = Assertions.assertThrows(NoItemFoundException.class, () -> drinkService.findById(999));
         Assertions.assertEquals("NO ITEM FOUND WITH ID: 999", result.getMessage());
     }
 
     @Test
-    void testDeleteById_success() {
+    void feleteById_success() {
         Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
         drinkService.deleteById(expected.getId());
         Mockito.verify(drinkRepository).deleteById(expected.getId());
     }
 
     @Test
-    void testGetDrinkMenu() {
+    void getDrinkMenu() {
         drinkService.getDrinkMenu();
         Mockito.verify(drinkRepository).findAll();
     }
 
     @Test
-    void testUpdate_success() {
+    void update_success() {
         Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
 
         Drink updatedExpected = expected;
@@ -99,7 +99,7 @@ class DrinkServiceTest {
     }
 
     @Test
-    void testUpdate_updateItemName_conflictWithOtherName() {
+    void update_updateItemName_conflictWithOtherName() {
         Drink updatedExpected = new SoftDrink(expected);
         updatedExpected.setName("Other Drink");
         updatedExpected.setDescription("New Description");
@@ -116,7 +116,7 @@ class DrinkServiceTest {
     }
 
     @Test
-    void testUpdate_updateItemName_success() {
+    void update_updateItemName_success() {
         Drink updatedExpected = new SoftDrink(expected);
         updatedExpected.setName("Update New Name");
         updatedExpected.setDescription("New Description");

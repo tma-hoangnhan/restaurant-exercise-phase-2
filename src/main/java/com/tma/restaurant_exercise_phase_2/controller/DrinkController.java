@@ -29,33 +29,25 @@ public class DrinkController {
         return new ResponseEntity<>(drinks, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<String> createNewDrink(@RequestBody RequestDrink requestDrink) {
-        Drink newDrink;
+    private Drink buildDrink(RequestDrink requestDrink) {
         String type = requestDrink.getType();
         if (type.equals("SoftDrink")) {
-            newDrink = new SoftDrink(requestDrink);
+            return new SoftDrink(requestDrink);
         } else if (type.equals("Alcohol")) {
-            newDrink = new Alcohol(requestDrink);
+            return new Alcohol(requestDrink);
         } else
             throw new InvalidItemTypeException("TYPE " + type + " IS INVALID");
+    }
 
-        drinkService.save(newDrink);
+    @PostMapping
+    public ResponseEntity<String> createNewDrink(@RequestBody RequestDrink requestDrink) {
+        drinkService.save(buildDrink(requestDrink));
         return new ResponseEntity<>("Created", HttpStatus.CREATED);
     }
 
     @PutMapping
     public ResponseEntity<String> updateDrink(@RequestBody RequestDrink requestDrink) {
-        Drink updatedDrink;
-        String type = requestDrink.getType();
-        if (type.equals("SoftDrink")) {
-            updatedDrink = new SoftDrink(requestDrink);
-        } else if (type.equals("Alcohol")) {
-            updatedDrink = new Alcohol(requestDrink);
-        } else
-            throw new InvalidItemTypeException("TYPE " + type + " IS INVALID");
-
-        drinkService.update(updatedDrink);
+        drinkService.update(buildDrink(requestDrink));
         return new ResponseEntity<>("Updated", HttpStatus.OK);
     }
 
