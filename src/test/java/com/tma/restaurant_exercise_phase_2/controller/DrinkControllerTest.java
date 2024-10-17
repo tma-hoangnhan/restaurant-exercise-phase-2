@@ -41,7 +41,7 @@ class DrinkControllerTest {
     }
 
     @Test
-    void testGetDrinkMenu() throws Exception {
+    void getDrinkMenu() throws Exception {
 
         Mockito.when(drinkService.getDrinkMenu()).thenReturn(List.of(expected));
 
@@ -56,7 +56,7 @@ class DrinkControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"SoftDrink", "Alcohol"})
-    void testCreateNewDrink_typeOfSoftDrink(String type) throws Exception {
+    void createNewDrink_typeOfSoftDrink(String type) throws Exception {
         RequestDrink requestDrink = new RequestDrink("Test Drink", "Test Drink", "Image URL for Test Drink", 10, 500, type);
         requestDrink.setId(1);
 
@@ -74,7 +74,7 @@ class DrinkControllerTest {
     }
 
     @Test
-    void testCreateNewDrink_throwInvalidTypeException() throws Exception {
+    void createNewDrink_throwInvalidTypeException() throws Exception {
         String type = "Invalid Type";
         RequestDrink requestDrink = new RequestDrink("Test Drink", "Test Drink", "Image URL for Test Drink", 10, 500, type);
         requestDrink.setId(1);
@@ -92,7 +92,7 @@ class DrinkControllerTest {
     }
 
     @Test
-    void testGetDrinkById_found() throws Exception {
+    void getDrinkById_found() throws Exception {
         Mockito.when(drinkService.findById(expected.getId())).thenReturn(expected);
 
         mockMvc.perform(
@@ -107,7 +107,7 @@ class DrinkControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"SoftDrink", "Alcohol"})
-    void testUpdateDrink(String type) throws Exception {
+    void updateDrink(String type) throws Exception {
         RequestDrink requestDrink = new RequestDrink("Test Drink", "Test Drink", "Image URL for Test Drink", 10, 500, type);
         requestDrink.setId(1);
 
@@ -125,7 +125,7 @@ class DrinkControllerTest {
     }
 
     @Test
-    void testDeleteDrink() throws Exception {
+    void deleteDrink() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders
                                 .delete("/drink")

@@ -32,19 +32,19 @@ class FoodServiceTest {
     }
 
     @Test
-    void testGetFoodMenu() {
+    void getFoodMenu() {
         foodService.getFoodMenu();
         Mockito.verify(foodRepository).findAll();
     }
 
     @Test
-    void testSave_success() {
+    void save_success() {
         foodService.save(expected);
         Mockito.verify(foodRepository).save(expected);
     }
 
     @Test
-    void testSave_itemNameHasAlreadyExisted() {
+    void save_itemNameHasAlreadyExisted() {
         Mockito.when(foodRepository.findFoodByName(expected.getName())).thenReturn(Optional.of(expected));
         ItemNameAlreadyExistedException result = Assertions.assertThrows(
                 ItemNameAlreadyExistedException.class,
@@ -54,7 +54,7 @@ class FoodServiceTest {
     }
 
     @Test
-    void testFindById_found() {
+    void findById_found() {
         Mockito.when(foodRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
 
         Food actual = foodService.findById(expected.getId());
@@ -65,13 +65,13 @@ class FoodServiceTest {
     }
 
     @Test
-    void testFindById_notFound() {
+    void findById_notFound() {
         NoItemFoundException result = Assertions.assertThrows(NoItemFoundException.class, () -> foodService.findById(999));
         Assertions.assertEquals("NO ITEM FOUND WITH ID: 999", result.getMessage());
     }
 
     @Test
-    void testDeleteById_success() {
+    void deleteById_success() {
         Mockito.when(foodRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
         foodService.deleteById(expected.getId());
         Mockito.verify(foodRepository).deleteById(expected.getId());
