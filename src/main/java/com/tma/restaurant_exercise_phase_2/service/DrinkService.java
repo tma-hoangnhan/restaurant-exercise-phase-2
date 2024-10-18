@@ -5,9 +5,11 @@ import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import com.tma.restaurant_exercise_phase_2.repository.DrinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,8 +21,9 @@ public class DrinkService {
         this.drinkRepository = drinkRepository;
     }
 
-    public List<Drink> getDrinkMenu() {
-        return drinkRepository.findAll();
+    public Page<Drink> getDrinkMenu(int page, int perPage) {
+        Pageable pageable = PageRequest.of(page - 1, perPage);
+        return drinkRepository.getListOfActiveDrinks(pageable);
     }
 
     public void save(Drink drink) {

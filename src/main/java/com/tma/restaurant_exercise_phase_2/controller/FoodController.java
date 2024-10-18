@@ -2,14 +2,16 @@ package com.tma.restaurant_exercise_phase_2.controller;
 
 import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.FoodFactory;
 import com.tma.restaurant_exercise_phase_2.model.food.Food;
+import com.tma.restaurant_exercise_phase_2.model.reponsebody.ListResponse;
 import com.tma.restaurant_exercise_phase_2.model.requestbody.RequestFood;
 import com.tma.restaurant_exercise_phase_2.service.FoodService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.security.InvalidParameterException;
 
 @RestController
 @RequestMapping(path = "/food")
@@ -22,8 +24,21 @@ public class FoodController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Food>> getFoodMenu() {
-        return new ResponseEntity<>(foodService.getFoodMenu(), HttpStatus.OK);
+    public ResponseEntity<ListResponse<Food>> getFoodMenu(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int perPage) {
+        if (page < 1 || perPage < 1)
+            throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
+
+        Page<Food> foodPage = foodService.getFoodMenu(page, perPage);
+        return new ResponseEntity<>(
+                new ListResponse<>(
+                        foodPage.getNumber() + 1,
+                        foodPage.getSize(),
+                        foodPage.getTotalElements(),
+                        foodPage.getTotalPages(),
+                        foodPage.getContent()
+                ),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping
