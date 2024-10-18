@@ -13,14 +13,26 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "item")
 public abstract class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     protected int id;
+
+    @Column(name = "name")
     protected String name;
+
+    @Column(name = "description")
     protected String description;
+
+    @Column(name = "img")
     protected String img;
+
+    @Column(name = "price")
     protected double price;
+
+    @Column(name = "state")
     protected int state;
     
     @Transient

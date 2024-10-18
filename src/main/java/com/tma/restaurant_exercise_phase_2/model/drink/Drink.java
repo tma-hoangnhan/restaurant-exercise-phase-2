@@ -4,15 +4,15 @@ import com.tma.restaurant_exercise_phase_2.model.Item;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @NoArgsConstructor
+@Table(name = "drink")
 public abstract class Drink extends Item {
+    @Column(name = "volume")
     protected int volume;
 
     protected Drink(String name, String description, String img, double price, int volume) {

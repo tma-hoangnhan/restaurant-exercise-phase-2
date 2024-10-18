@@ -6,10 +6,12 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
+@Table(name = "Food")
 public abstract class Food extends Item {
     protected Food(String name, String description, String img, double price) {
         super(name, description, img, price);

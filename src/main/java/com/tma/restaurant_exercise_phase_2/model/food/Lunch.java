@@ -1,8 +1,10 @@
 package com.tma.restaurant_exercise_phase_2.model.food;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "lunch")
 public class Lunch extends Food {
     public Lunch(String name, String description, String img, double price) {
         super(name, description, img, price);
