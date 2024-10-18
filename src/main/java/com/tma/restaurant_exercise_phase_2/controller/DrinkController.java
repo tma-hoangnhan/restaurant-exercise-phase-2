@@ -1,9 +1,7 @@
 package com.tma.restaurant_exercise_phase_2.controller;
 
-import com.tma.restaurant_exercise_phase_2.exceptions.InvalidItemTypeException;
-import com.tma.restaurant_exercise_phase_2.model.drink.Alcohol;
+import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.DrinkFactory;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
-import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
 import com.tma.restaurant_exercise_phase_2.model.requestbody.RequestDrink;
 import com.tma.restaurant_exercise_phase_2.service.DrinkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,25 +27,17 @@ public class DrinkController {
         return new ResponseEntity<>(drinks, HttpStatus.OK);
     }
 
-    private Drink buildDrink(RequestDrink requestDrink) {
-        String type = requestDrink.getType();
-        if (type.equals("SoftDrink")) {
-            return new SoftDrink(requestDrink);
-        } else if (type.equals("Alcohol")) {
-            return new Alcohol(requestDrink);
-        } else
-            throw new InvalidItemTypeException("TYPE " + type + " IS INVALID");
-    }
-
     @PostMapping
     public ResponseEntity<String> createNewDrink(@RequestBody RequestDrink requestDrink) {
-        drinkService.save(buildDrink(requestDrink));
+        Drink newDrink = DrinkFactory.getInstance().createDrink(requestDrink);
+        drinkService.save(newDrink);
         return new ResponseEntity<>("Created", HttpStatus.CREATED);
     }
 
     @PutMapping
     public ResponseEntity<String> updateDrink(@RequestBody RequestDrink requestDrink) {
-        drinkService.update(buildDrink(requestDrink));
+        Drink updatedDrink = DrinkFactory.getInstance().createDrink(requestDrink);
+        drinkService.update(updatedDrink);
         return new ResponseEntity<>("Updated", HttpStatus.OK);
     }
 
