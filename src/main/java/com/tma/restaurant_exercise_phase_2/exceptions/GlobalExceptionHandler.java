@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.security.InvalidParameterException;
+
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,6 +22,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = InvalidItemTypeException.class)
     public ExceptionResponse handleInvalidItemTypeException(InvalidItemTypeException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = InvalidParameterException.class)
+    public ExceptionResponse handleInvalidParameterException(InvalidParameterException ex) {
         return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
