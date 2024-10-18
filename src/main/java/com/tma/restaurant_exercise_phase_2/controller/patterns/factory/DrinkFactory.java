@@ -16,7 +16,7 @@ public class DrinkFactory {
     }
 
     public Drink createDrink(String type) {
-        if (type == null) return null;
+        if (type == null) throw new InvalidItemTypeException("TYPE NULL IS INVALID");
 
         if(type.equalsIgnoreCase("SOFTDRINK"))
             return new SoftDrink();
@@ -29,7 +29,7 @@ public class DrinkFactory {
     public Drink createDrink(RequestDrink requestDrink) {
         String type = requestDrink.getType();
 
-        if (type == null) return null;
+        if (type == null) throw new InvalidItemTypeException("TYPE NULL IS INVALID");
 
         if(type.equalsIgnoreCase("SOFTDRINK"))
             return new SoftDrink(requestDrink);

@@ -18,7 +18,7 @@ public class FoodFactory {
     }
 
     public Food createFood(String type) {
-        if (type == null) return null;
+        if (type == null) throw new InvalidItemTypeException("TYPE NULL IS INVALID");
 
         if(type.equalsIgnoreCase("BREAKFAST"))
             return new Breakfast();
@@ -32,7 +32,7 @@ public class FoodFactory {
 
     public Food createFood(RequestFood requestFood) {
         String type = requestFood.getType();
-        if (type == null) return null;
+        if (type == null) throw new InvalidItemTypeException("TYPE NULL IS INVALID");
 
         if(type.equalsIgnoreCase("BREAKFAST"))
             return new Breakfast(requestFood);
