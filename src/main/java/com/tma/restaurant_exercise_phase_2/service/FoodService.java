@@ -30,6 +30,19 @@ public class FoodService {
         foodRepository.save(food);
     }
 
+    public void update(Food updatedFood) {
+        // Check if the requested ID is existed
+        Food dbDrink = findById(updatedFood.getId());
+
+        // Check the duplication of the updated item
+        if (!updatedFood.getName().equals(dbDrink.getName())) {
+            Optional<Food> optional = findFoodByName(updatedFood.getName());
+            if (optional.isPresent())
+                throw new ItemNameAlreadyExistedException("ITEM WITH NAME " + updatedFood.getName() + " HAS ALREADY EXISTED");
+        }
+        foodRepository.save(updatedFood);
+    }
+
     public Food findById(int id) {
         return foodRepository
                 .findById(id)

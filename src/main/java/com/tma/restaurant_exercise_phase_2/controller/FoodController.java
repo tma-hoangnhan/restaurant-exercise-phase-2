@@ -33,6 +33,13 @@ public class FoodController {
         return new ResponseEntity<>("Created", HttpStatus.CREATED);
     }
 
+    @PutMapping
+    public ResponseEntity<String> updateFood(@RequestBody RequestFood requestFood) {
+        Food updatedFood = FoodFactory.getInstance().createFood(requestFood);
+        foodService.update(updatedFood);
+        return new ResponseEntity<>("Updated", HttpStatus.OK);
+    }
+
     @DeleteMapping
     public ResponseEntity<String> deleteFoodById(@RequestParam int id) {
         foodService.deleteById(id);

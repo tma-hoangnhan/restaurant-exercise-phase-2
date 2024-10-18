@@ -16,6 +16,6 @@ public abstract class Food extends Item {
     }
 
     protected Food(Food food) {
-        super(food.name, food.description, food.img, food.price);
+        super(food.id, food.name, food.description, food.img, food.price);
     }
 }
