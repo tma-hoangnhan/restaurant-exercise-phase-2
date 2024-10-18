@@ -8,6 +8,8 @@ import com.tma.restaurant_exercise_phase_2.repository.FoodRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -76,5 +78,44 @@ class FoodServiceTest {
         foodService.deleteById(expected.getId());
         Mockito.verify(foodRepository).save(expected);
         Assertions.assertEquals(0, expected.getState());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Test Breakfast", "New Name Of Food"})
+    void update_success(String name) {
+        Food updatedExpected = new Breakfast(expected);
+        updatedExpected.setName(name);
+        updatedExpected.setDescription("New Description");
+        updatedExpected.setPrice(100);
+
+        Mockito.when(foodRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
+        foodService.update(updatedExpected);
+
+        Mockito.verify(foodRepository).save(updatedExpected);
+        Mockito.when(foodRepository.findById(updatedExpected.getId())).thenReturn(Optional.of(updatedExpected));
+
+        Food actual = foodService.findById(updatedExpected.getId());
+        Assertions.assertEquals(updatedExpected.getName(), actual.getName());
+        Assertions.assertEquals(updatedExpected.getDescription(), actual.getDescription());
+        Assertions.assertEquals(updatedExpected.getImg(), actual.getImg());
+        Assertions.assertEquals(updatedExpected.getPrice(), actual.getPrice());
+    }
+
+    @Test
+    void update_conflictWithOtherName() {
+        Food updatedExpected = new Breakfast(expected);
+        updatedExpected.setName("Other Food");
+        updatedExpected.setDescription("New Description");
+        updatedExpected.setPrice(100);
+
+        Mockito.when(foodRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
+        Mockito.when(foodRepository.findFoodByName(updatedExpected.getName())).thenReturn(Optional.of(updatedExpected));
+
+        ItemNameAlreadyExistedException result = Assertions.assertThrows(
+                ItemNameAlreadyExistedException.class,
+                () -> foodService.update(updatedExpected)
+        );
+
+        Assertions.assertEquals("ITEM WITH NAME " + updatedExpected.getName() + " HAS ALREADY EXISTED", result.getMessage());
     }
 }

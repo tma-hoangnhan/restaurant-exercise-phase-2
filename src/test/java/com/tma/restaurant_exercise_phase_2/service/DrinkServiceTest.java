@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -81,17 +83,19 @@ class DrinkServiceTest {
         Mockito.verify(drinkRepository).findAll();
     }
 
-    @Test
-    void update_success() {
-        Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
-
-        Drink updatedExpected = expected;
+    @ParameterizedTest
+    @ValueSource(strings = {"Test Drink", "Update New Name"})
+    void update_success(String name) {
+        Drink updatedExpected = new SoftDrink(expected);
+        updatedExpected.setName(name);
         updatedExpected.setDescription("New Description");
         updatedExpected.setPrice(100);
 
+        Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
         drinkService.update(updatedExpected);
+
         Mockito.verify(drinkRepository).save(updatedExpected);
-        Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(updatedExpected));
+        Mockito.when(drinkRepository.findById(updatedExpected.getId())).thenReturn(Optional.of(updatedExpected));
 
         Drink actual = drinkService.findById(updatedExpected.getId());
         Assertions.assertEquals(updatedExpected.getName(), actual.getName());
@@ -110,32 +114,12 @@ class DrinkServiceTest {
 
         Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
         Mockito.when(drinkRepository.findDrinkByName(updatedExpected.getName())).thenReturn(Optional.of(updatedExpected));
+
         ItemNameAlreadyExistedException result = Assertions.assertThrows(
                 ItemNameAlreadyExistedException.class,
                 () -> drinkService.update(updatedExpected)
         );
 
         Assertions.assertEquals("ITEM WITH NAME " + updatedExpected.getName() + " HAS ALREADY EXISTED", result.getMessage());
-    }
-
-    @Test
-    void update_updateItemName_success() {
-        Drink updatedExpected = new SoftDrink(expected);
-        updatedExpected.setName("Update New Name");
-        updatedExpected.setDescription("New Description");
-        updatedExpected.setPrice(100);
-
-        Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
-        drinkService.update(updatedExpected);
-
-        Mockito.verify(drinkRepository).save(updatedExpected);
-        Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(updatedExpected));
-
-        Drink actual = drinkService.findById(updatedExpected.getId());
-        Assertions.assertEquals(updatedExpected.getName(), actual.getName());
-        Assertions.assertEquals(updatedExpected.getDescription(), actual.getDescription());
-        Assertions.assertEquals(updatedExpected.getImg(), actual.getImg());
-        Assertions.assertEquals(updatedExpected.getPrice(), actual.getPrice());
-        Assertions.assertEquals(updatedExpected.getVolume(), actual.getVolume());
     }
 }
