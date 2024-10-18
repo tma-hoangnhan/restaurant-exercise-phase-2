@@ -74,6 +74,7 @@ class FoodServiceTest {
     void deleteById_success() {
         Mockito.when(foodRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
         foodService.deleteById(expected.getId());
-        Mockito.verify(foodRepository).deleteById(expected.getId());
+        Mockito.verify(foodRepository).save(expected);
+        Assertions.assertEquals(0, expected.getState());
     }
 }

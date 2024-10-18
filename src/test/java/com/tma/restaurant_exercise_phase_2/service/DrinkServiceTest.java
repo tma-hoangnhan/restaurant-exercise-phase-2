@@ -5,6 +5,7 @@ import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
 import com.tma.restaurant_exercise_phase_2.repository.DrinkRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
+@Slf4j
 class DrinkServiceTest {
     private DrinkService drinkService;
 
@@ -66,10 +68,11 @@ class DrinkServiceTest {
     }
 
     @Test
-    void feleteById_success() {
+    void deleteById_success() {
         Mockito.when(drinkRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
         drinkService.deleteById(expected.getId());
-        Mockito.verify(drinkRepository).deleteById(expected.getId());
+        Mockito.verify(drinkRepository).save(expected);
+        Assertions.assertEquals(0, expected.getState());
     }
 
     @Test

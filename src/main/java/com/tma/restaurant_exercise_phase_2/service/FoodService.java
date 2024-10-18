@@ -40,8 +40,12 @@ public class FoodService {
         return foodRepository.findFoodByName(name);
     }
 
+    /**
+     * Safe-delete Food by its ID
+     */
     public void deleteById(int id) {
-        findById(id);
-        foodRepository.deleteById(id);
+        Food food = findById(id);
+        food.setState(0);
+        foodRepository.save(food);
     }
 }

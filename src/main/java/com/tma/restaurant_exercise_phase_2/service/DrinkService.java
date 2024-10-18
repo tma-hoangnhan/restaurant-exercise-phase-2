@@ -53,8 +53,12 @@ public class DrinkService {
         return drinkRepository.findDrinkByName(name);
     }
 
+    /**
+     * Safe-delete a Drink by its ID
+     */
     public void deleteById(int id) {
-        findById(id);
-        drinkRepository.deleteById(id);
+        Drink drink = findById(id);
+        drink.setState(0);
+        drinkRepository.save(drink);
     }
 }
