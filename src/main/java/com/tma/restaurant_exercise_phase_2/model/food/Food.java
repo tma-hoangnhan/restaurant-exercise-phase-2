@@ -1,5 +1,6 @@
 package com.tma.restaurant_exercise_phase_2.model.food;
 
+import com.tma.restaurant_exercise_phase_2.dtos.FoodDTO;
 import com.tma.restaurant_exercise_phase_2.model.Item;
 import lombok.NoArgsConstructor;
 
@@ -19,5 +20,16 @@ public abstract class Food extends Item {
 
     protected Food(Food food) {
         super(food.id, food.name, food.description, food.img, food.price);
+    }
+
+    public FoodDTO toDTO() {
+        FoodDTO foodDTO = new FoodDTO();
+        foodDTO.setId(getId());
+        foodDTO.setName(getName());
+        foodDTO.setDescription(getDescription());
+        foodDTO.setImg(getImg());
+        foodDTO.setPrice(getPrice());
+        foodDTO.setType(getType());
+        return foodDTO;
     }
 }
