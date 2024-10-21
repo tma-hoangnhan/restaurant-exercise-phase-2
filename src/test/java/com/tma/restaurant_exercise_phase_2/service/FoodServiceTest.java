@@ -13,7 +13,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 class FoodServiceTest {
@@ -35,8 +40,17 @@ class FoodServiceTest {
 
     @Test
     void getFoodMenu() {
-        foodService.getFoodMenu();
-        Mockito.verify(foodRepository).findAll();
+        int page = 1; int perPage = 10;
+        Pageable pageable = PageRequest.of(0, perPage);
+        Page<Food> expectedFoodPage = new PageImpl<>(List.of(expected), pageable, 1);
+
+        Mockito.when(foodRepository.getListOfActiveFoods(pageable)).thenReturn(expectedFoodPage);
+        Page<Food> actual = foodService.getFoodMenu(page, perPage);
+        Mockito.verify(foodRepository).getListOfActiveFoods(pageable);
+
+        Assertions.assertEquals(expectedFoodPage.getNumber(), actual.getNumber());
+        Assertions.assertEquals(expectedFoodPage.getSize(), actual.getSize());
+        Assertions.assertEquals(expectedFoodPage.getTotalElements(), actual.getTotalElements());
     }
 
     @Test

@@ -93,9 +93,9 @@ class DrinkServiceTest {
         Page<Drink> actual = drinkService.getDrinkMenu(page, perPage);
         Mockito.verify(drinkRepository).getListOfActiveDrinks(PageRequest.of(0, perPage));
 
-        Assertions.assertEquals(page, actual.getNumber() + 1);
-        Assertions.assertEquals(perPage, actual.getSize());
-        Assertions.assertEquals(1, actual.getTotalElements());
+        Assertions.assertEquals(expectedDrinkPage.getNumber(), actual.getNumber());
+        Assertions.assertEquals(expectedDrinkPage.getSize(), actual.getSize());
+        Assertions.assertEquals(expectedDrinkPage.getTotalElements(), actual.getTotalElements());
     }
 
     @ParameterizedTest
