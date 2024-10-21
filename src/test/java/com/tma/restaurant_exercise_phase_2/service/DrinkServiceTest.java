@@ -1,9 +1,11 @@
 package com.tma.restaurant_exercise_phase_2.service;
 
+import com.tma.restaurant_exercise_phase_2.dtos.DrinkDTO;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
+import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.repository.DrinkRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -90,12 +92,12 @@ class DrinkServiceTest {
         Page<Drink> expectedDrinkPage = new PageImpl<>(List.of(expected), pageable, 1);
         Mockito.when(drinkRepository.getListOfActiveDrinks(pageable)).thenReturn(expectedDrinkPage);
 
-        Page<Drink> actual = drinkService.getDrinkMenu(page, perPage);
+        CollectionResponse<DrinkDTO> actual = drinkService.getDrinkMenu(page, perPage);
         Mockito.verify(drinkRepository).getListOfActiveDrinks(PageRequest.of(0, perPage));
 
-        Assertions.assertEquals(expectedDrinkPage.getNumber(), actual.getNumber());
-        Assertions.assertEquals(expectedDrinkPage.getSize(), actual.getSize());
-        Assertions.assertEquals(expectedDrinkPage.getTotalElements(), actual.getTotalElements());
+        Assertions.assertEquals(expectedDrinkPage.getNumber(), actual.getPage() - 1);
+        Assertions.assertEquals(expectedDrinkPage.getSize(), actual.getPerPage());
+        Assertions.assertEquals(expectedDrinkPage.getTotalElements(), actual.getTotalItems());
     }
 
     @ParameterizedTest
