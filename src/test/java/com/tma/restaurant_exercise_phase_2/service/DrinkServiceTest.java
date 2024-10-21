@@ -14,7 +14,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -79,8 +84,18 @@ class DrinkServiceTest {
 
     @Test
     void getDrinkMenu() {
-        drinkService.getDrinkMenu();
-        Mockito.verify(drinkRepository).findAll();
+        int page = 1; int perPage = 10;
+
+        Pageable pageable = PageRequest.of(0, perPage);
+        Page<Drink> expectedDrinkPage = new PageImpl<>(List.of(expected), pageable, 1);
+        Mockito.when(drinkRepository.getListOfActiveDrinks(pageable)).thenReturn(expectedDrinkPage);
+
+        Page<Drink> actual = drinkService.getDrinkMenu(page, perPage);
+        Mockito.verify(drinkRepository).getListOfActiveDrinks(PageRequest.of(0, perPage));
+
+        Assertions.assertEquals(page, actual.getNumber() + 1);
+        Assertions.assertEquals(perPage, actual.getSize());
+        Assertions.assertEquals(1, actual.getTotalElements());
     }
 
     @ParameterizedTest

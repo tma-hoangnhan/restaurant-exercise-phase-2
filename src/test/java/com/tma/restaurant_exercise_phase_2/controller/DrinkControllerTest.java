@@ -5,7 +5,6 @@ import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
 import com.tma.restaurant_exercise_phase_2.model.requestbody.RequestDrink;
 import com.tma.restaurant_exercise_phase_2.service.DrinkService;
 import com.tma.restaurant_exercise_phase_2.utils.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,16 +13,17 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Slf4j
 @WebMvcTest(DrinkController.class)
 class DrinkControllerTest {
     @Autowired
@@ -42,16 +42,21 @@ class DrinkControllerTest {
 
     @Test
     void getDrinkMenu() throws Exception {
+        int page = 1; int perPage = 10;
+        Page<Drink> drinkPage = new PageImpl<>(List.of(expected), PageRequest.of(page, perPage), 1);
+        Mockito.when(drinkService.getDrinkMenu(page, perPage)).thenReturn(drinkPage);
 
-        Mockito.when(drinkService.getDrinkMenu()).thenReturn(List.of(expected));
-
-        MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.get("/drink").accept(MediaType.APPLICATION_JSON)
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/drink?page=1&perPage=10").accept(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isMap())
+                .andExpect(jsonPath("$.page").isNumber())
+                .andExpect(jsonPath("$.perPage").isNumber())
+                .andExpect(jsonPath("$.totalItems").isNumber())
+                .andExpect(jsonPath("$.totalPages").isNumber())
+                .andExpect(jsonPath("$.contents").isArray())
                 .andReturn();
-        log.info(result.getResponse().getContentAsString());
     }
 
     @ParameterizedTest
