@@ -1,12 +1,10 @@
 package com.tma.restaurant_exercise_phase_2.controller;
 
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.DrinkFactory;
+import com.tma.restaurant_exercise_phase_2.dtos.DrinkDTO;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
-import com.tma.restaurant_exercise_phase_2.model.reponsebody.ListResponse;
-import com.tma.restaurant_exercise_phase_2.model.requestbody.RequestDrink;
+import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.service.DrinkService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,33 +22,28 @@ public class DrinkController {
     }
 
     @GetMapping
-    public ResponseEntity<ListResponse<Drink>> getDrinkMenu(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int perPage) {
+    public ResponseEntity<CollectionResponse<DrinkDTO>> getDrinkMenu(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int perPage) {
         if (page < 1 || perPage < 1)
             throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
 
-        Page<Drink> drinkPage = drinkService.getDrinkMenu(page, perPage);
         return new ResponseEntity<>(
-                new ListResponse<>(
-                        drinkPage.getNumber() + 1,
-                        drinkPage.getSize(),
-                        drinkPage.getTotalElements(),
-                        drinkPage.getTotalPages(),
-                        drinkPage.getContent()
-                ),
+                drinkService.getDrinkMenu(page, perPage),
                 HttpStatus.OK
         );
     }
 
     @PostMapping
-    public ResponseEntity<String> createNewDrink(@RequestBody RequestDrink requestDrink) {
-        Drink newDrink = DrinkFactory.getInstance().createDrink(requestDrink);
+    public ResponseEntity<String> createNewDrink(@RequestBody DrinkDTO drinkDTO) {
+        Drink newDrink = drinkDTO.toEntity();
         drinkService.save(newDrink);
         return new ResponseEntity<>("Created", HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<String> updateDrink(@RequestBody RequestDrink requestDrink) {
-        Drink updatedDrink = DrinkFactory.getInstance().createDrink(requestDrink);
+    public ResponseEntity<String> updateDrink(@RequestBody DrinkDTO drinkDTO) {
+        Drink updatedDrink = drinkDTO.toEntity();
+        updatedDrink.setState(drinkDTO.getState());
+
         drinkService.update(updatedDrink);
         return new ResponseEntity<>("Updated", HttpStatus.OK);
     }
@@ -62,7 +55,7 @@ public class DrinkController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Drink> getDrinkById(@PathVariable("id") int id) {
-        return new ResponseEntity<>(drinkService.findById(id), HttpStatus.OK);
+    public ResponseEntity<DrinkDTO> getDrinkById(@PathVariable("id") int id) {
+        return new ResponseEntity<>(drinkService.findById(id).toDTO(), HttpStatus.OK);
     }
 }

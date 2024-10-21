@@ -1,9 +1,11 @@
 package com.tma.restaurant_exercise_phase_2.service;
 
+import com.tma.restaurant_exercise_phase_2.dtos.FoodDTO;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.food.Breakfast;
 import com.tma.restaurant_exercise_phase_2.model.food.Food;
+import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.repository.FoodRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,16 +43,22 @@ class FoodServiceTest {
     @Test
     void getFoodMenu() {
         int page = 1; int perPage = 10;
+        CollectionResponse<FoodDTO> foodCollectionResponse = new CollectionResponse<>();
+        foodCollectionResponse.setPage(page);
+        foodCollectionResponse.setPerPage(perPage);
+        foodCollectionResponse.setTotalItems(1);
+        foodCollectionResponse.setContents(List.of(expected.toDTO()));
+
         Pageable pageable = PageRequest.of(0, perPage);
         Page<Food> expectedFoodPage = new PageImpl<>(List.of(expected), pageable, 1);
 
         Mockito.when(foodRepository.getListOfActiveFoods(pageable)).thenReturn(expectedFoodPage);
-        Page<Food> actual = foodService.getFoodMenu(page, perPage);
+        CollectionResponse<FoodDTO>  actual = foodService.getFoodMenu(page, perPage);
         Mockito.verify(foodRepository).getListOfActiveFoods(pageable);
 
-        Assertions.assertEquals(expectedFoodPage.getNumber(), actual.getNumber());
-        Assertions.assertEquals(expectedFoodPage.getSize(), actual.getSize());
-        Assertions.assertEquals(expectedFoodPage.getTotalElements(), actual.getTotalElements());
+        Assertions.assertEquals(expectedFoodPage.getNumber(), actual.getPage() - 1);
+        Assertions.assertEquals(expectedFoodPage.getSize(), actual.getPerPage());
+        Assertions.assertEquals(expectedFoodPage.getTotalElements(), actual.getTotalItems());
     }
 
     @Test

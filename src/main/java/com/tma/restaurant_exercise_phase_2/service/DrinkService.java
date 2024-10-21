@@ -1,8 +1,10 @@
 package com.tma.restaurant_exercise_phase_2.service;
 
+import com.tma.restaurant_exercise_phase_2.dtos.DrinkDTO;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
+import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.repository.DrinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DrinkService {
@@ -21,9 +24,18 @@ public class DrinkService {
         this.drinkRepository = drinkRepository;
     }
 
-    public Page<Drink> getDrinkMenu(int page, int perPage) {
+    public CollectionResponse<DrinkDTO> getDrinkMenu(int page, int perPage) {
         Pageable pageable = PageRequest.of(page - 1, perPage);
-        return drinkRepository.getListOfActiveDrinks(pageable);
+        Page<Drink> drinkPage = drinkRepository.getListOfActiveDrinks(pageable);
+
+        CollectionResponse<DrinkDTO> drinkCollectionResponse = new CollectionResponse<>();
+        drinkCollectionResponse.setPage(drinkPage.getNumber() + 1);
+        drinkCollectionResponse.setPerPage(drinkPage.getSize());
+        drinkCollectionResponse.setTotalPages(drinkPage.getTotalPages());
+        drinkCollectionResponse.setTotalItems(drinkPage.getTotalElements());
+        drinkCollectionResponse.setContents(drinkPage.stream().map(Drink::toDTO).collect(Collectors.toList()));
+
+        return drinkCollectionResponse;
     }
 
     public void save(Drink drink) {

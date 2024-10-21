@@ -1,10 +1,11 @@
 package com.tma.restaurant_exercise_phase_2.controller;
 
-import com.tma.restaurant_exercise_phase_2.dtos.DrinkDTO;
-import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
-import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
+import com.tma.restaurant_exercise_phase_2.dtos.FoodDTO;
+import com.tma.restaurant_exercise_phase_2.model.food.Breakfast;
+import com.tma.restaurant_exercise_phase_2.model.food.Food;
 import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
-import com.tma.restaurant_exercise_phase_2.service.DrinkService;
+import com.tma.restaurant_exercise_phase_2.model.requestbody.RequestFood;
+import com.tma.restaurant_exercise_phase_2.service.FoodService;
 import com.tma.restaurant_exercise_phase_2.utils.JsonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,36 +23,36 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(DrinkController.class)
-class DrinkControllerTest {
+@WebMvcTest(FoodController.class)
+class FoodControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private DrinkService drinkService;
+    FoodService foodService;
 
-    Drink expected;
+    Food expected;
 
     @BeforeEach
     void setUp() {
-        expected = new SoftDrink("Test Drink", "Test Drink", "Image URL for Test Drink", 10, 500);
+        expected = new Breakfast("Noodles", "Noodles", "Noodles", 30);
         expected.setId(1);
     }
 
     @Test
-    void getDrinkMenu() throws Exception {
+    void getFoodMenu() throws Exception {
         int page = 1; int perPage = 10;
-        CollectionResponse<DrinkDTO> response = new CollectionResponse<>();
-        response.setPage(page);
-        response.setPerPage(perPage);
-        response.setTotalItems(1);
-        response.setContents(List.of(expected.toDTO()));
+        CollectionResponse<FoodDTO> foodCollectionResponse = new CollectionResponse<>();
+        foodCollectionResponse.setPage(page);
+        foodCollectionResponse.setPerPage(perPage);
+        foodCollectionResponse.setTotalItems(1);
+        foodCollectionResponse.setContents(List.of(expected.toDTO()));
 
-        Mockito.when(drinkService.getDrinkMenu(page, perPage)).thenReturn(response);
+        Mockito.when(foodService.getFoodMenu(page, perPage)).thenReturn(foodCollectionResponse);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/drink?page=1&perPage=10").accept(MediaType.APPLICATION_JSON)
-        )
+                        MockMvcRequestBuilders.get("/food?page=1&perPage=10").accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
                 .andExpect(jsonPath("$.page").isNumber())
@@ -63,45 +64,29 @@ class DrinkControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"SoftDrink", "Alcohol"})
-    void createNewDrink_success(String type) throws Exception {
-        DrinkDTO reqDrinkDto = new DrinkDTO();
-        reqDrinkDto.setName("Test Drink");
-        reqDrinkDto.setDescription("Test Drink");
-        reqDrinkDto.setImg("Image URL");
-        reqDrinkDto.setPrice(10);
-        reqDrinkDto.setVolume(500);
-        reqDrinkDto.setType(type);
+    @ValueSource(strings = {"Breakfast", "Lunch", "Dinner"})
+    void createNewFood_success(String type) throws Exception {
+        RequestFood requestFood = new RequestFood("Test Food", "Test Food", "Test Food", 30, type);
+        String jsonValue = JsonUtils.writeJsonString(requestFood);
 
-        String jsonValue = JsonUtils.writeJsonString(reqDrinkDto);
         mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .post("/drink")
-                                .content(jsonValue)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                )
+                MockMvcRequestBuilders.post("/food")
+                        .content(jsonValue)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$").isString())
                 .andExpect(jsonPath("$").value("Created"));
     }
 
     @Test
-    void createNewDrink_throwInvalidTypeException() throws Exception {
+    void createNewFood_throwInvalidTypeException() throws Exception {
         String type = "Invalid Type";
+        RequestFood requestFood = new RequestFood("Test Food", "Test Food", "Test Food", 30, type);
+        String jsonValue = JsonUtils.writeJsonString(requestFood);
 
-        DrinkDTO reqDrinkDto = new DrinkDTO();
-        reqDrinkDto.setName("Test Drink");
-        reqDrinkDto.setDescription("Test Drink");
-        reqDrinkDto.setImg("Image URL");
-        reqDrinkDto.setPrice(10);
-        reqDrinkDto.setVolume(500);
-        reqDrinkDto.setType(type);
-
-        String jsonValue = JsonUtils.writeJsonString(reqDrinkDto);
         mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .post("/drink")
+                        MockMvcRequestBuilders.post("/food")
                                 .content(jsonValue)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
@@ -111,35 +96,35 @@ class DrinkControllerTest {
     }
 
     @Test
-    void getDrinkById_found() throws Exception {
-        Mockito.when(drinkService.findById(expected.getId())).thenReturn(expected);
+    void getFoodById_found() throws Exception {
+        Mockito.when(foodService.findById(expected.getId())).thenReturn(expected);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders
-                                .get("/drink/" + expected.getId())
+                        MockMvcRequestBuilders.get("/food/" + expected.getId())
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isMap())
                 .andExpect(jsonPath("$.id").value(expected.getId()));
+
+        Mockito.verify(foodService).findById(expected.getId());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"SoftDrink", "Alcohol"})
-    void updateDrink(String type) throws Exception {
-        DrinkDTO reqDrinkDto = new DrinkDTO();
-        reqDrinkDto.setId(1);
-        reqDrinkDto.setName("Test Drink");
-        reqDrinkDto.setDescription("Test Drink");
-        reqDrinkDto.setImg("Image URL");
-        reqDrinkDto.setPrice(10);
-        reqDrinkDto.setVolume(500);
-        reqDrinkDto.setType(type);
+    @ValueSource(strings = {"Breakfast", "Lunch", "Dinner"})
+    void updateFood(String type) throws Exception {
+        FoodDTO foodDTO = new FoodDTO();
+        foodDTO.setId(1);
+        foodDTO.setName("Test Food");
+        foodDTO.setDescription("Test Food");
+        foodDTO.setImg("Image URL");
+        foodDTO.setPrice(30);
+        foodDTO.setType(type);
 
-        String jsonValue = JsonUtils.writeJsonString(reqDrinkDto);
+        String jsonValue = JsonUtils.writeJsonString(foodDTO);
         mockMvc.perform(
                         MockMvcRequestBuilders
-                                .put("/drink")
+                                .put("/food")
                                 .content(jsonValue)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
@@ -153,7 +138,7 @@ class DrinkControllerTest {
     void deleteDrink() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders
-                                .delete("/drink")
+                                .delete("/food")
                                 .queryParam("id", String.valueOf(expected.getId()))
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -161,4 +146,5 @@ class DrinkControllerTest {
                 .andExpect(jsonPath("$").isString())
                 .andExpect(jsonPath("$").value("Deleted"));
     }
+
 }

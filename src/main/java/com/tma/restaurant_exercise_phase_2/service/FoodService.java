@@ -1,8 +1,10 @@
 package com.tma.restaurant_exercise_phase_2.service;
 
+import com.tma.restaurant_exercise_phase_2.dtos.FoodDTO;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.food.Food;
+import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.repository.FoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FoodService {
@@ -21,9 +24,18 @@ public class FoodService {
         this.foodRepository = foodRepository;
     }
 
-    public Page<Food> getFoodMenu(int page, int perPage) {
+    public CollectionResponse<FoodDTO> getFoodMenu(int page, int perPage) {
         Pageable pageable = PageRequest.of(page - 1, perPage);
-        return foodRepository.getListOfActiveFoods(pageable);
+        Page<Food> foodPage = foodRepository.getListOfActiveFoods(pageable);
+
+        CollectionResponse<FoodDTO> foodCollectionResponse = new CollectionResponse<>();
+        foodCollectionResponse.setPage(foodPage.getNumber() + 1);
+        foodCollectionResponse.setPerPage(foodPage.getSize());
+        foodCollectionResponse.setTotalPages(foodPage.getTotalPages());
+        foodCollectionResponse.setTotalItems(foodPage.getTotalElements());
+        foodCollectionResponse.setContents(foodPage.getContent().stream().map(Food::toDTO).collect(Collectors.toList()));
+
+        return foodCollectionResponse;
     }
 
     public void save(Food food) {
