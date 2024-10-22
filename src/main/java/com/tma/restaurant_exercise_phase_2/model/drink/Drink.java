@@ -28,6 +28,7 @@ public abstract class Drink extends Item {
         this.volume = drink.volume;
     }
 
+    @Override
     public DrinkDTO toDTO() {
         DrinkDTO drinkDTO = new DrinkDTO();
         drinkDTO.setId(getId());
@@ -37,6 +38,7 @@ public abstract class Drink extends Item {
         drinkDTO.setPrice(getPrice());
         drinkDTO.setVolume(getVolume());
         drinkDTO.setState(getState());
+        drinkDTO.setType(getType());
         return drinkDTO;
     }
 }
