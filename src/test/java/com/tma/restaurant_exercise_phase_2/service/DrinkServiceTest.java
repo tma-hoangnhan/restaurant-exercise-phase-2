@@ -5,7 +5,7 @@ import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedExce
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
-import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
+import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.repository.DrinkRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;

@@ -1,4 +1,4 @@
-package com.tma.restaurant_exercise_phase_2.model.reponsebody;
+package com.tma.restaurant_exercise_phase_2.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

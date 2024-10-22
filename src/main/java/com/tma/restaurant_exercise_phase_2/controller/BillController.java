@@ -4,7 +4,7 @@ import com.tma.restaurant_exercise_phase_2.dtos.BillDTO;
 import com.tma.restaurant_exercise_phase_2.dtos.BillDetailsDTO;
 import com.tma.restaurant_exercise_phase_2.dtos.OrderItemDTO;
 import com.tma.restaurant_exercise_phase_2.model.bill.Bill;
-import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
+import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.service.BillService;
 import com.tma.restaurant_exercise_phase_2.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;

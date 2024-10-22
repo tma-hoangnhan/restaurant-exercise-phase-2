@@ -5,7 +5,7 @@ import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedExce
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.food.Breakfast;
 import com.tma.restaurant_exercise_phase_2.model.food.Food;
-import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
+import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.repository.FoodRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

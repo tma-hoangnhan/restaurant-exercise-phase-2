@@ -4,7 +4,7 @@ import com.tma.restaurant_exercise_phase_2.dtos.FoodDTO;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.food.Food;
-import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
+import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.repository.FoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
