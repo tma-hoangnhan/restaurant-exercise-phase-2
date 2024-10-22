@@ -22,6 +22,7 @@ public abstract class Food extends Item {
         super(food.id, food.name, food.description, food.img, food.price);
     }
 
+    @Override
     public FoodDTO toDTO() {
         FoodDTO foodDTO = new FoodDTO();
         foodDTO.setId(getId());

@@ -1,5 +1,6 @@
 package com.tma.restaurant_exercise_phase_2.model;
 
+import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,5 +54,16 @@ public abstract class Item {
         this.img = img;
         this.price = price;
         this.state = 1;
+    }
+
+    public ItemDTO toDTO() {
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setId(getId());
+        itemDTO.setName(getName());
+        itemDTO.setDescription(getDescription());
+        itemDTO.setImg(getImg());
+        itemDTO.setPrice(getPrice());
+        itemDTO.setType(getType());
+        return itemDTO;
     }
 }

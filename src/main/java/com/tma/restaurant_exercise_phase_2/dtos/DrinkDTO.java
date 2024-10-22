@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class DrinkDTO {
+public class DrinkDTO extends ItemDTO{
     private int id;
     private String name;
     private String description;

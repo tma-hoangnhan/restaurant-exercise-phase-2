@@ -1,5 +1,7 @@
 package com.tma.restaurant_exercise_phase_2.model.bill;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.tma.restaurant_exercise_phase_2.dtos.OrderItemDTO;
 import com.tma.restaurant_exercise_phase_2.model.Item;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +15,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties("bill")
 @Table(name = "order_item")
 public class OrderItem {
     @Id
@@ -29,4 +32,13 @@ public class OrderItem {
 
     @Column(name = "quantity")
     private int quantity;
+
+    public OrderItemDTO toDTO() {
+        OrderItemDTO orderItemDTO = new OrderItemDTO();
+        orderItemDTO.setId(getId());
+        orderItemDTO.setBillId(getBill().getId());
+        orderItemDTO.setQuantity(getQuantity());
+        orderItemDTO.setItem(getItem().toDTO());
+        return orderItemDTO;
+    }
 }
