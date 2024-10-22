@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping(path = "/bill")
@@ -36,7 +37,7 @@ public class BillController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public String createBill() {
-        Bill newBill = billService.createNewBill();
+        Bill newBill = billService.save(new Bill(LocalDateTime.now()));
         return "Bill " + newBill.getId() + " created";
     }
 

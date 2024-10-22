@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Slf4j
 @Service
 public class OrderItemService {
@@ -22,10 +20,6 @@ public class OrderItemService {
 
     public void save(OrderItem orderItem) {
         orderItemRepository.save(orderItem);
-    }
-
-    public List<OrderItem> getListOfOrderItemsByBillId(int billId) {
-        return orderItemRepository.getListOfOrderItemsByBillId(billId);
     }
 
     public OrderItem findById(int id) {

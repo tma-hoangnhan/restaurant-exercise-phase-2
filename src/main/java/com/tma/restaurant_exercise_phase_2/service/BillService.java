@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +33,7 @@ public class BillService {
         Page<Bill> billPage = billRepository.getAllBills(PageRequest.of(page - 1, perPage));
 
         CollectionResponse<BillDTO> billCollectionResponse = new CollectionResponse<>();
-        billCollectionResponse.setPage(billPage.getNumber());
+        billCollectionResponse.setPage(billPage.getNumber() + 1);
         billCollectionResponse.setPerPage(billPage.getSize());
         billCollectionResponse.setTotalPages(billPage.getTotalPages());
         billCollectionResponse.setTotalItems(billPage.getTotalElements());
@@ -43,8 +42,8 @@ public class BillService {
         return billCollectionResponse;
     }
 
-    public Bill createNewBill() {
-        return billRepository.save(new Bill(LocalDateTime.now()));
+    public Bill save(Bill bill) {
+        return billRepository.save(bill);
     }
 
     public Bill findById(int id) {
