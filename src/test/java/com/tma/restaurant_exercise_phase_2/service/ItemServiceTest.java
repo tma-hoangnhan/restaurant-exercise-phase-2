@@ -46,28 +46,28 @@ class ItemServiceTest {
 
     @Test
     void save_itemNameHasAlreadyExisted() {
-        //given
+        // given
         Mockito.when(itemRepository.findItemByName(expected.getName())).thenReturn(Optional.of(expected));
 
-        //when
+        // when
         ItemNameAlreadyExistedException result = Assertions.assertThrows(
                 ItemNameAlreadyExistedException.class,
                 () -> itemService.save(expected)
         );
 
-        //then
+        // then
         Assertions.assertEquals("ITEM WITH NAME " + expected.getName() + " HAS ALREADY EXISTED", result.getMessage());
     }
 
     @Test
     void findById_found() {
-        //given
+        // given
         Mockito.when(itemRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
 
-        //when
+        // when
         Item actual = itemService.findById(expected.getId());
 
-        //then
+        // then
         Assertions.assertEquals(expected.getName(), actual.getName());
         Assertions.assertEquals(expected.getDescription(), actual.getDescription());
         Assertions.assertEquals(expected.getImg(), actual.getImg());
@@ -76,39 +76,39 @@ class ItemServiceTest {
 
     @Test
     void findById_notFound() {
-        //when
+        // when
         NoItemFoundException result = Assertions.assertThrows(NoItemFoundException.class, () -> itemService.findById(999));
 
-        //then
+        // then
         Assertions.assertEquals("NO ITEM FOUND WITH ID: 999", result.getMessage());
     }
 
     @Test
     void deleteById_success() {
-        //given
+        // given
         Mockito.when(itemRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
 
-        //when
+        // when
         itemService.deleteById(expected.getId());
 
-        //then
+        // then
         Mockito.verify(itemRepository).save(expected);
         Assertions.assertEquals(0, expected.getState());
     }
 
     @Test
     void getAllItems() {
-        //given
+        // given
         int page = 1; int perPage = 10;
 
         Pageable pageable = PageRequest.of(0, perPage);
         Page<Item> expectedItemPage = new PageImpl<>(List.of(expected), pageable, 1);
         Mockito.when(itemRepository.getMenu(pageable)).thenReturn(expectedItemPage);
 
-        //when
+        // when
         CollectionResponse<ItemDTO> actual = itemService.getAllItems(page, perPage);
 
-        //then
+        // then
         Mockito.verify(itemRepository).getMenu(PageRequest.of(0, perPage));
         Assertions.assertEquals(expectedItemPage.getNumber(), actual.getPage() - 1);
         Assertions.assertEquals(expectedItemPage.getSize(), actual.getPerPage());
@@ -118,29 +118,29 @@ class ItemServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"Test Drink", "Update New Name"})
     void update_success(String name) {
-        //given
+        // given
         Drink updatedExpected = new SoftDrink((Drink) expected);
         updatedExpected.setName(name);
         updatedExpected.setDescription("New Description");
         updatedExpected.setPrice(100);
 
-        //when
+        // when
         Mockito.when(itemRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
         itemService.update(updatedExpected);
 
-        //then
+        // then
         Mockito.verify(itemRepository).save(updatedExpected);
     }
 
     @Test
     void update_updateItemName_conflictWithOtherName() {
-        //given
+        // given
         Drink updatedExpected = new SoftDrink((Drink) expected);
         updatedExpected.setName("Other Drink");
         updatedExpected.setDescription("New Description");
         updatedExpected.setPrice(100);
 
-        //when
+        // when
         Mockito.when(itemRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
         Mockito.when(itemRepository.findItemByName(updatedExpected.getName())).thenReturn(Optional.of(updatedExpected));
 
@@ -149,7 +149,7 @@ class ItemServiceTest {
                 () -> itemService.update(updatedExpected)
         );
 
-        //then
+        // then
         Assertions.assertEquals("ITEM WITH NAME " + updatedExpected.getName() + " HAS ALREADY EXISTED", result.getMessage());
     }
 }

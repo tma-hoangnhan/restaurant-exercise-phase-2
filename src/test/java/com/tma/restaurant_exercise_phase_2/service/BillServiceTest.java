@@ -69,12 +69,16 @@ class BillServiceTest {
 
     @Test
     void getAllBills() {
+        // given
         int page = 1, perPage = 10;
         Pageable pageable = PageRequest.of(0, perPage);
         Page<Bill> billPage = new PageImpl<>(List.of(expected), pageable, 1);
         Mockito.when(billRepository.getAllBills(pageable)).thenReturn(billPage);
 
+        // when
         CollectionResponse<BillDTO> actual = billService.getAllBills(page, perPage);
+
+        // then
         Mockito.verify(billRepository).getAllBills(pageable);
         Assertions.assertEquals(page, actual.getPage());
         Assertions.assertEquals(perPage, actual.getPerPage());
@@ -84,17 +88,25 @@ class BillServiceTest {
 
     @Test
     void createNewBill() {
+        // given
         Bill bill = new Bill(LocalDateTime.now());
 
+        // when
         billService.save(bill);
+
+        // then
         Mockito.verify(billRepository).save(bill);
     }
 
     @Test
     void findById_found() {
+        // given
         Mockito.when(billRepository.findById(1)).thenReturn(Optional.of(expected));
 
+        // when
         Bill actual = billService.findById(1);
+
+        // then
         Mockito.verify(billRepository).findById(1);
         Assertions.assertEquals(expected.getId(), actual.getId());
         Assertions.assertEquals(expected.getOrderedTime(), actual.getOrderedTime());
@@ -103,21 +115,27 @@ class BillServiceTest {
 
     @Test
     void findById_throwNoItemFoundException() {
+        // when
         NoItemFoundException result = Assertions.assertThrows(
                 NoItemFoundException.class,
                 () -> billService.findById(1000)
         );
+
+        // then
         Assertions.assertEquals("NO BILL FOUND WITH ID: 1000", result.getMessage());
     }
 
     @Test
     void getBillDetailsByID() {
+        // given
         Mockito.when(billRepository.findById(1)).thenReturn(Optional.of(expected));
         BillDTO expectedDTO = expected.toDTO();
 
+        // when
         BillDTO actual = billService.getBillDetailsById(1);
-        Mockito.verify(billRepository).findById(1);
 
+        // then
+        Mockito.verify(billRepository).findById(1);
         Assertions.assertEquals(expectedDTO.getId(), actual.getId());
         Assertions.assertEquals(expectedDTO.getTotalPrice(), actual.getTotalPrice());
         Assertions.assertEquals(expectedDTO.getOrderedTime(), actual.getOrderedTime());
@@ -125,6 +143,7 @@ class BillServiceTest {
 
     @Test
     void addItemToBill_updateQuantity() {
+        // given
         OrderItemDTO reqOrderItem = new OrderItemDTO();
         reqOrderItem.setId(1);
         reqOrderItem.setBillId(1);
@@ -134,8 +153,10 @@ class BillServiceTest {
         Mockito.when(itemService.findById(orderItem1.getItem().getId())).thenReturn(orderItem1.getItem());
         Mockito.when(billRepository.findById(1)).thenReturn(Optional.of(expected));
 
+        // when
         String result = billService.addItemToBill(reqOrderItem);
 
+        // then
         Mockito.verify(orderItemService).save(orderItem1);
         Assertions.assertEquals(6, orderItem1.getQuantity());
         Assertions.assertEquals("5 Food have been added into Bill 1", result);
@@ -143,6 +164,7 @@ class BillServiceTest {
 
     @Test
     void addItemToBill_createNewOrderItem() {
+        // given
         OrderItemDTO reqOrderItem = new OrderItemDTO();
         reqOrderItem.setId(1);
         reqOrderItem.setBillId(1);
@@ -155,12 +177,16 @@ class BillServiceTest {
         Mockito.when(itemService.findById(4)).thenReturn(newItem);
         Mockito.when(billRepository.findById(1)).thenReturn(Optional.of(expected));
 
+        // when
         String result = billService.addItemToBill(reqOrderItem);
+
+        // then
         Assertions.assertEquals("5 RandomFood have been added into Bill 1", result);
     }
 
     @Test
     void addItemToBill_throwCannotAddItemToBillException() {
+        // given
         OrderItemDTO reqOrderItem = new OrderItemDTO();
         reqOrderItem.setId(1);
         reqOrderItem.setBillId(1);
@@ -172,17 +198,26 @@ class BillServiceTest {
         reqOrderItem.setItem(newItem.toDTO());
 
         Mockito.when(itemService.findById(4)).thenReturn(newItem);
+
+        // when
         CannotAddItemToBillException result = Assertions.assertThrows(
                 CannotAddItemToBillException.class,
                 () -> billService.addItemToBill(reqOrderItem)
         );
+
+        // then
         Assertions.assertEquals("ITEM WITH ID: 4 IS NOT AVAILABLE", result.getMessage());
     }
 
     @Test
     void deleteById() {
+        // given
         Mockito.when(billRepository.findById(1)).thenReturn(Optional.of(expected));
+
+        // when
         String result = billService.deleteById(1);
+
+        // then
         Mockito.verify(billRepository).deleteById(1);
         Assertions.assertEquals("Bill with ID: 1 deleted", result);
     }

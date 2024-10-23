@@ -41,9 +41,13 @@ class OrderItemServiceTest {
 
     @Test
     void findById_found() {
+        // given
         Mockito.when(orderItemRepository.findById(1)).thenReturn(Optional.of(expected));
 
+        // when
         OrderItem actual = orderItemService.findById(1);
+
+        // then
         Mockito.verify(orderItemRepository).findById(1);
         Assertions.assertEquals(expected.getId(), actual.getId());
         Assertions.assertEquals(expected.getItem().getId(), actual.getItem().getId());
@@ -53,20 +57,28 @@ class OrderItemServiceTest {
 
     @Test
     void findById_throwNoItemFoundException() {
+        // when
         NoItemFoundException result = Assertions.assertThrows(
                 NoItemFoundException.class,
                 () -> orderItemService.findById(1000)
         );
+
+        // then
         Assertions.assertEquals("NO ORDER ITEM FOUND WITH ID: 1000", result.getMessage());
     }
 
     @Test
     void updateOrderItem_quantityGreaterOrEqualsTo1() {
+        // given
         OrderItemDTO reqOrderItem = expected.toDTO();
         reqOrderItem.setQuantity(5);
 
         Mockito.when(orderItemRepository.findById(1)).thenReturn(Optional.of(expected));
+
+        // when
         String result = orderItemService.updateOrderItem(reqOrderItem);
+
+        // then
         Mockito.verify(orderItemRepository).save(expected);
         Assertions.assertEquals("Order Item with ID: 1 updated", result);
         Assertions.assertEquals(5, expected.getQuantity());
@@ -74,22 +86,30 @@ class OrderItemServiceTest {
 
     @Test
     void updateOrderItem_quantityLessThan1() {
+        // given
         OrderItemDTO reqOrderItem = expected.toDTO();
         reqOrderItem.setQuantity(0);
 
         Mockito.when(orderItemRepository.findById(1)).thenReturn(Optional.of(expected));
-        String result = orderItemService.updateOrderItem(reqOrderItem);
-        Mockito.verify(orderItemRepository).deleteById(1);
 
+        // when
+        String result = orderItemService.updateOrderItem(reqOrderItem);
+
+        // then
+        Mockito.verify(orderItemRepository).deleteById(1);
         Assertions.assertEquals("Order Item with ID: 1 deleted", result);
     }
 
     @Test
     void deleteById() {
+        // given
         Mockito.when(orderItemRepository.findById(1)).thenReturn(Optional.of(expected));
-        String result = orderItemService.deleteById(1);
-        Mockito.verify(orderItemRepository).deleteById(1);
 
+        // when
+        String result = orderItemService.deleteById(1);
+
+        // then
+        Mockito.verify(orderItemRepository).deleteById(1);
         Assertions.assertEquals("Order Item with ID: 1 deleted", result);
     }
 
