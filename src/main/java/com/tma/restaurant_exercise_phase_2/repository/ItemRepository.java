@@ -17,7 +17,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Query("SELECT d FROM Drink d WHERE d.state = 1")
     Page<Item> getListOfActiveDrinks(Pageable pageable);
 
-    @Query("SELECT f FROM Food f WHERE d.state = 1")
+    @Query("SELECT f FROM Food f WHERE f.state = 1")
     Page<Item> getListOfActiveFoods(Pageable pageable);
 
     @Query("SELECT i FROM Item i WHERE i.name = ?1")
