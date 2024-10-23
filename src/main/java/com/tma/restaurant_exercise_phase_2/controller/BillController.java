@@ -4,7 +4,7 @@ import com.tma.restaurant_exercise_phase_2.dtos.BillDTO;
 import com.tma.restaurant_exercise_phase_2.dtos.BillDetailsDTO;
 import com.tma.restaurant_exercise_phase_2.dtos.OrderItemDTO;
 import com.tma.restaurant_exercise_phase_2.model.bill.Bill;
-import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
+import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.service.BillService;
 import com.tma.restaurant_exercise_phase_2.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping(path = "/bill")
@@ -36,7 +37,7 @@ public class BillController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public String createBill() {
-        Bill newBill = billService.createNewBill();
+        Bill newBill = billService.save(new Bill(LocalDateTime.now()));
         return "Bill " + newBill.getId() + " created";
     }
 

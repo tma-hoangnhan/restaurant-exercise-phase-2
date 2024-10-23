@@ -3,7 +3,7 @@ package com.tma.restaurant_exercise_phase_2.controller;
 import com.tma.restaurant_exercise_phase_2.dtos.FoodDTO;
 import com.tma.restaurant_exercise_phase_2.model.food.Breakfast;
 import com.tma.restaurant_exercise_phase_2.model.food.Food;
-import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
+import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.model.requestbody.RequestFood;
 import com.tma.restaurant_exercise_phase_2.service.FoodService;
 import com.tma.restaurant_exercise_phase_2.utils.JsonUtils;

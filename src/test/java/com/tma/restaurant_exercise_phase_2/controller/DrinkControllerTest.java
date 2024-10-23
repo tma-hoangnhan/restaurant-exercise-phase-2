@@ -3,7 +3,7 @@ package com.tma.restaurant_exercise_phase_2.controller;
 import com.tma.restaurant_exercise_phase_2.dtos.DrinkDTO;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
-import com.tma.restaurant_exercise_phase_2.model.reponsebody.CollectionResponse;
+import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.service.DrinkService;
 import com.tma.restaurant_exercise_phase_2.utils.JsonUtils;
 import org.junit.jupiter.api.BeforeEach;
