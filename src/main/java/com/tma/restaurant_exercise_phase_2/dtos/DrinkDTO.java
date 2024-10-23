@@ -1,6 +1,6 @@
 package com.tma.restaurant_exercise_phase_2.dtos;
 
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.DrinkFactory;
+import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.FactoryProvider;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ public class DrinkDTO extends ItemDTO{
     private String type;
 
     public Drink toEntity() {
-        Drink drink = DrinkFactory.getInstance().createDrink(getType());
+        Drink drink = FactoryProvider.getInstance().getDrinkFactory(getType()).createDrink();
         drink.setId(getId());
         drink.setName(getName());
         drink.setDescription(getDescription());

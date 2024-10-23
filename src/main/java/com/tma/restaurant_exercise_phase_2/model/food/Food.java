@@ -30,6 +30,7 @@ public abstract class Food extends Item {
         foodDTO.setDescription(getDescription());
         foodDTO.setImg(getImg());
         foodDTO.setPrice(getPrice());
+        foodDTO.setState(getState());
         foodDTO.setType(getType());
         return foodDTO;
     }

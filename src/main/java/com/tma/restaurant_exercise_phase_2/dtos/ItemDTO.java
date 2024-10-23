@@ -16,4 +16,5 @@ public class ItemDTO {
     private String type;
     private int state;
     private int volume;
+    private boolean isDrink;
 }

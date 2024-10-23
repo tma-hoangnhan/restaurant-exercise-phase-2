@@ -29,4 +29,9 @@ public class GlobalExceptionHandler {
     public ExceptionResponse handleInvalidParameterException(InvalidParameterException ex) {
         return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = CannotAddItemToBillException.class)
+    public ExceptionResponse handleCannotAddItemToBillException(CannotAddItemToBillException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
