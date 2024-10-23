@@ -2,6 +2,7 @@ package com.tma.restaurant_exercise_phase_2.service;
 
 import com.tma.restaurant_exercise_phase_2.dtos.BillDetailsDTO;
 import com.tma.restaurant_exercise_phase_2.dtos.OrderItemDTO;
+import com.tma.restaurant_exercise_phase_2.exceptions.CannotAddItemToBillException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.Item;
 import com.tma.restaurant_exercise_phase_2.model.bill.Bill;
@@ -57,9 +58,10 @@ public class BillService {
 
     public String addItemToBill(OrderItemDTO orderItemDTO) {
         int itemId = orderItemDTO.getItem().getId();
-        int quantity = orderItemDTO.getQuantity();
-
         Item item = itemService.findById(itemId);
+        if (item.getState() == 0) throw new CannotAddItemToBillException("ITEM WITH ID: " + itemId + " IS NOT AVAILABLE");
+
+        int quantity = orderItemDTO.getQuantity();
         Bill bill = findById(orderItemDTO.getBillId());
 
         for (OrderItem oi : bill.getOrderItemList()) {

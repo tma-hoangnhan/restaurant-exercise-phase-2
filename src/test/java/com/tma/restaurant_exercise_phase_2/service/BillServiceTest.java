@@ -3,6 +3,7 @@ package com.tma.restaurant_exercise_phase_2.service;
 import com.tma.restaurant_exercise_phase_2.dtos.BillDTO;
 import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.dtos.OrderItemDTO;
+import com.tma.restaurant_exercise_phase_2.exceptions.CannotAddItemToBillException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.Item;
 import com.tma.restaurant_exercise_phase_2.model.bill.Bill;
@@ -156,6 +157,26 @@ class BillServiceTest {
 
         String result = billService.addItemToBill(reqOrderItem);
         Assertions.assertEquals("5 RandomFood have been added into Bill 1", result);
+    }
+
+    @Test
+    void addItemToBill_throwCannotAddItemToBillException() {
+        OrderItemDTO reqOrderItem = new OrderItemDTO();
+        reqOrderItem.setId(1);
+        reqOrderItem.setBillId(1);
+        reqOrderItem.setQuantity(5);
+
+        Item newItem = new Breakfast("RandomFood", "Food", "Food", 30);
+        newItem.setId(4);
+        newItem.setState(0);
+        reqOrderItem.setItem(newItem.toDTO());
+
+        Mockito.when(itemService.findById(4)).thenReturn(newItem);
+        CannotAddItemToBillException result = Assertions.assertThrows(
+                CannotAddItemToBillException.class,
+                () -> billService.addItemToBill(reqOrderItem)
+        );
+        Assertions.assertEquals("ITEM WITH ID: 4 IS NOT AVAILABLE", result.getMessage());
     }
 
     @Test

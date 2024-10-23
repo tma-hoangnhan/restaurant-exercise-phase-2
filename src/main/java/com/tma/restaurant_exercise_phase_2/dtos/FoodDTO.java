@@ -1,6 +1,6 @@
 package com.tma.restaurant_exercise_phase_2.dtos;
 
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.FoodFactory;
+import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.FactoryProvider;
 import com.tma.restaurant_exercise_phase_2.model.food.Food;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class FoodDTO extends ItemDTO {
     private int state;
 
     public Food toEntity() {
-        Food food = FoodFactory.getInstance().createFood(getType());
+        Food food = FactoryProvider.getInstance().getFoodFactory(getType()).createFood();
         food.setId(getId());
         food.setName(getName());
         food.setDescription(getDescription());
