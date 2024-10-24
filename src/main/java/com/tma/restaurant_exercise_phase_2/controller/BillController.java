@@ -29,7 +29,7 @@ public class BillController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CollectionResponse<BillDTO> getAllBills(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int perPage) {
-        if (page < 1 || perPage <1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 1");
+        if (page < 1 || perPage <1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
 
         return billService.getAllBills(page, perPage);
     }
