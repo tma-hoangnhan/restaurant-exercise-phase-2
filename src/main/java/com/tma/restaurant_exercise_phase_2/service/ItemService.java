@@ -2,6 +2,7 @@ package com.tma.restaurant_exercise_phase_2.service;
 
 import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
+import com.tma.restaurant_exercise_phase_2.exceptions.ItemAlreadyDeletedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.Item;
@@ -119,6 +120,7 @@ public class ItemService {
      */
     public void deleteById(int id) {
         Item item = findById(id);
+        if (item.getState() == 0) throw new ItemAlreadyDeletedException("ITEM WITH ID: " + id + " HAS ALREADY BEEN DELETED");
         item.setState(0);
         itemRepository.save(item);
     }

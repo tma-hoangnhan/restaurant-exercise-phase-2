@@ -34,4 +34,9 @@ public class GlobalExceptionHandler {
     public ExceptionResponse handleCannotAddItemToBillException(CannotAddItemToBillException ex) {
         return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = ItemAlreadyDeletedException.class)
+    public ExceptionResponse handleItemAlreadyDeletedException(ItemAlreadyDeletedException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
