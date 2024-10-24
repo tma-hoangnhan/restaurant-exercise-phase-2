@@ -2,6 +2,7 @@ package com.tma.restaurant_exercise_phase_2.service;
 
 import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
+import com.tma.restaurant_exercise_phase_2.exceptions.ItemAlreadyDeletedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.Item;
@@ -98,6 +99,22 @@ class ItemServiceTest {
         // then
         verify(itemRepository).save(expected);
         assertEquals(0, expected.getState());
+    }
+
+    @Test
+    void deleteById_throwItemAlreadyDeletedException() {
+        // given
+        expected.setState(0);
+        when(itemRepository.findById(expected.getId())).thenReturn(Optional.of(expected));
+
+        // when
+        ItemAlreadyDeletedException result = assertThrows(
+                ItemAlreadyDeletedException.class,
+                () -> itemService.deleteById(expected.getId())
+        );
+
+        // then
+        assertEquals("ITEM WITH ID: 1 HAS ALREADY BEEN DELETED", result.getMessage());
     }
 
     @Test
