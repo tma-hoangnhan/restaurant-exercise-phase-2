@@ -29,19 +29,19 @@ public class BillController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CollectionResponse<BillDTO> getAllBills(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int perPage) {
-        if (page < 1 || perPage <1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 1");
+        if (page < 1 || perPage <1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
 
         return billService.getAllBills(page, perPage);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public String createBill() {
         Bill newBill = billService.save(new Bill(LocalDateTime.now()));
         return "Bill " + newBill.getId() + " created";
     }
 
-    @GetMapping("/get-details/{id}")
+    @GetMapping("/details/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BillDetailsDTO getBillById(@PathVariable("id") int id) {
         return billService.getBillDetailsById(id);

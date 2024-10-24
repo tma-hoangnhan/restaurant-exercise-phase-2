@@ -1,12 +1,12 @@
-package com.tma.restaurant_exercise_phase_2.controller.patterns.factory;
+package com.tma.restaurant_exercise_phase_2.patterns.factory;
 
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.drink.AlcoholFactory;
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.drink.DrinkFactory;
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.drink.SoftDrinkFactory;
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.food.BreakfastFactory;
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.food.DinnerFactory;
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.food.FoodFactory;
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.food.LunchFactory;
+import com.tma.restaurant_exercise_phase_2.patterns.factory.drink.AlcoholFactory;
+import com.tma.restaurant_exercise_phase_2.patterns.factory.drink.DrinkFactory;
+import com.tma.restaurant_exercise_phase_2.patterns.factory.drink.SoftDrinkFactory;
+import com.tma.restaurant_exercise_phase_2.patterns.factory.food.BreakfastFactory;
+import com.tma.restaurant_exercise_phase_2.patterns.factory.food.DinnerFactory;
+import com.tma.restaurant_exercise_phase_2.patterns.factory.food.FoodFactory;
+import com.tma.restaurant_exercise_phase_2.patterns.factory.food.LunchFactory;
 import com.tma.restaurant_exercise_phase_2.exceptions.InvalidItemTypeException;
 
 public class FactoryProvider {

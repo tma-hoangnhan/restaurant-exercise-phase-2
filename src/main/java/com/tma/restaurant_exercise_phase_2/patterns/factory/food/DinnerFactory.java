@@ -1,18 +1,18 @@
-package com.tma.restaurant_exercise_phase_2.controller.patterns.factory.food;
+package com.tma.restaurant_exercise_phase_2.patterns.factory.food;
 
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
+import com.tma.restaurant_exercise_phase_2.model.food.Dinner;
 import com.tma.restaurant_exercise_phase_2.model.food.Food;
-import com.tma.restaurant_exercise_phase_2.model.food.Lunch;
 
-public class LunchFactory implements FoodFactory {
+public class DinnerFactory implements FoodFactory {
     @Override
     public Food createFood() {
-        return new Lunch();
+        return new Dinner();
     }
 
     @Override
     public Food createFood(ItemDTO itemDTO) {
-        Food food = new Lunch();
+        Food food = new Dinner();
         food.setId(itemDTO.getId());
         food.setName(itemDTO.getName());
         food.setDescription(itemDTO.getDescription());
