@@ -48,7 +48,7 @@ class BillControllerTest {
     }
 
     @Test
-    void getAllBills() throws Exception {
+    void getAllBills_return200() throws Exception {
         int page = 1, perPage = 10;
         CollectionResponse<BillDTO> response = CollectionResponse.<BillDTO>builder()
                 .page(page)
@@ -68,12 +68,21 @@ class BillControllerTest {
                 .andExpect(jsonPath("$.perPage").isNumber())
                 .andExpect(jsonPath("$.totalItems").isNumber())
                 .andExpect(jsonPath("$.totalPages").isNumber())
-                .andExpect(jsonPath("$.contents").isArray())
-                .andReturn();
+                .andExpect(jsonPath("$.contents").isArray());
     }
 
     @Test
-    void testCreateBill() throws Exception {
+    void getAllBills_invalidParameters_return400() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bill?page=0&perPage=0").accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").isString())
+                .andExpect(jsonPath("$").value("page AND perPage MUST BE LARGER THAN 0"));
+    }
+
+    @Test
+    void createBill_return201() throws Exception {
         Mockito.when(billService.save(Mockito.any(Bill.class))).thenReturn(expectedBill);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/bill").accept(MediaType.APPLICATION_JSON)
@@ -84,7 +93,7 @@ class BillControllerTest {
     }
 
     @Test
-    void testGetBillById() throws Exception {
+    void getBillById_return200() throws Exception {
         Mockito.when(billService.getBillDetailsById(1)).thenReturn(expectedBill.toBillDetailsDTO());
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bill/details/1").accept(MediaType.APPLICATION_JSON)
@@ -96,7 +105,7 @@ class BillControllerTest {
     }
 
     @Test
-    void deleteBillById() throws Exception {
+    void deleteBillById_return200() throws Exception {
         Mockito.when(billService.deleteById(1)).thenReturn("Bill with ID: 1 deleted");
         mockMvc.perform(
                         MockMvcRequestBuilders.delete("/bill?id=1").accept(MediaType.APPLICATION_JSON)
@@ -107,7 +116,7 @@ class BillControllerTest {
     }
 
     @Test
-    void addItemToBill() throws Exception {
+    void addItemToBill_return200() throws Exception {
         Mockito.when(billService.addItemToBill(Mockito.any(OrderItemDTO.class))).thenReturn("1 Food have been added into Bill 1");
         mockMvc.perform(
                         MockMvcRequestBuilders
@@ -122,7 +131,7 @@ class BillControllerTest {
     }
 
     @Test
-    void updateItem() throws Exception {
+    void updateItem_return200() throws Exception {
         Mockito.when(orderItemService.updateOrderItem(Mockito.any(OrderItemDTO.class))).thenReturn("Order Item with ID: 1 updated");
         mockMvc.perform(
                         MockMvcRequestBuilders
@@ -137,7 +146,7 @@ class BillControllerTest {
     }
 
     @Test
-    void deleteOrderItem() throws Exception {
+    void deleteOrderItem_return200() throws Exception {
         Mockito.when(orderItemService.deleteById(1)).thenReturn("Order Item with ID: 1 deleted");
         mockMvc.perform(
                         MockMvcRequestBuilders

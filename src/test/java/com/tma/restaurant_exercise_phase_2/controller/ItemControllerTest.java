@@ -9,6 +9,7 @@ import com.tma.restaurant_exercise_phase_2.service.ItemService;
 import com.tma.restaurant_exercise_phase_2.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -42,47 +43,134 @@ class ItemControllerTest {
         expected.setId(1);
     }
 
-    @Test
-    void getAllItems() throws Exception {
-        int page = 1; int perPage = 10;
-        CollectionResponse<ItemDTO> response = new CollectionResponse<>();
-        response.setPage(page);
-        response.setPerPage(perPage);
-        response.setTotalItems(1);
-        response.setContents(List.of(expected.toDTO()));
+    @Nested
+    class getListOfItems {
+        @Test
+        void getAllItems_return200() throws Exception {
+            int page = 1; int perPage = 10;
+            CollectionResponse<ItemDTO> response = CollectionResponse
+                    .<ItemDTO>builder()
+                    .page(page)
+                    .perPage(perPage)
+                    .totalPages(1)
+                    .totalItems(1)
+                    .contents(List.of(expected.toDTO()))
+                    .build();
+            Mockito.when(itemService.getAllItems(page, perPage)).thenReturn(response);
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/item?page=1&perPage=10").accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isMap())
+                    .andExpect(jsonPath("$.page").isNumber())
+                    .andExpect(jsonPath("$.perPage").isNumber())
+                    .andExpect(jsonPath("$.totalItems").isNumber())
+                    .andExpect(jsonPath("$.totalPages").isNumber())
+                    .andExpect(jsonPath("$.contents").isArray());
+        }
 
-        Mockito.when(itemService.getAllItems(page, perPage)).thenReturn(response);
+        @Test
+        void getAllItems_invalidParameter_return400() throws Exception {
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/item?page=0&perPage=0").accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$").isString())
+                    .andExpect(jsonPath("$").value("page AND perPage MUST BE LARGER THAN 0"));
+        }
+    }
 
-        mockMvc.perform(
-                        MockMvcRequestBuilders.get("/item?page=1&perPage=10").accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isMap())
-                .andExpect(jsonPath("$.page").isNumber())
-                .andExpect(jsonPath("$.perPage").isNumber())
-                .andExpect(jsonPath("$.totalItems").isNumber())
-                .andExpect(jsonPath("$.totalPages").isNumber())
-                .andExpect(jsonPath("$.contents").isArray())
-                .andReturn();
+    @Nested
+    class getDrinkMenu {
+        @Test
+        void getDrinkMenu_return200() throws Exception {
+            int page = 1; int perPage = 10;
+            CollectionResponse<ItemDTO> response = CollectionResponse
+                    .<ItemDTO>builder()
+                    .page(page)
+                    .perPage(perPage)
+                    .totalPages(1)
+                    .totalItems(1)
+                    .contents(List.of(expected.toDTO()))
+                    .build();
+            Mockito.when(itemService.getDrinkMenu(page, perPage)).thenReturn(response);
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/item/drink-menu?page=1&perPage=10").accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isMap())
+                    .andExpect(jsonPath("$.page").isNumber())
+                    .andExpect(jsonPath("$.perPage").isNumber())
+                    .andExpect(jsonPath("$.totalItems").isNumber())
+                    .andExpect(jsonPath("$.totalPages").isNumber())
+                    .andExpect(jsonPath("$.contents").isArray());
+        }
+
+        @Test
+        void getDrinkMenu_invalidParameter_return400() throws Exception {
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/item/drink-menu?page=0&perPage=0").accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$").isString())
+                    .andExpect(jsonPath("$").value("page AND perPage MUST BE LARGER THAN 0"));
+        }
+    }
+
+    @Nested
+    class getFoodMenu {
+        @Test
+        void getFoodMenu_return200() throws Exception {
+            int page = 1; int perPage = 10;
+            CollectionResponse<ItemDTO> response = CollectionResponse
+                    .<ItemDTO>builder()
+                    .page(page)
+                    .perPage(perPage)
+                    .totalPages(1)
+                    .totalItems(1)
+                    .contents(List.of(expected.toDTO()))
+                    .build();
+            Mockito.when(itemService.getFoodMenu(page, perPage)).thenReturn(response);
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/item/food-menu?page=1&perPage=10").accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isMap())
+                    .andExpect(jsonPath("$.page").isNumber())
+                    .andExpect(jsonPath("$.perPage").isNumber())
+                    .andExpect(jsonPath("$.totalItems").isNumber())
+                    .andExpect(jsonPath("$.totalPages").isNumber())
+                    .andExpect(jsonPath("$.contents").isArray());
+        }
+
+        @Test
+        void getFoodMenu_invalidParameter_return400() throws Exception {
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/item/food-menu?page=0&perPage=0").accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$").isString())
+                    .andExpect(jsonPath("$").value("page AND perPage MUST BE LARGER THAN 0"));
+        }
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"SoftDrink", "Alcohol"})
-    void createItem_success(String type) throws Exception {
-        DrinkDTO reqDrinkDto = new DrinkDTO();
-        reqDrinkDto.setName("Test Drink");
-        reqDrinkDto.setDescription("Test Drink");
-        reqDrinkDto.setImg("Image URL");
-        reqDrinkDto.setPrice(10);
-        reqDrinkDto.setVolume(500);
-        reqDrinkDto.setType(type);
-        reqDrinkDto.setDrink(true);
-
-        String jsonValue = JsonUtils.writeJsonString(reqDrinkDto);
+    void createItem_return201(String type) throws Exception {
+        DrinkDTO reqDrinkDto = DrinkDTO
+                .builder()
+                .name("Test Drink")
+                .description("Test Drink")
+                .img("Image URL")
+                .price(10)
+                .volume(500)
+                .type(type)
+                .isDrink(true)
+                .build();
         mockMvc.perform(
                         MockMvcRequestBuilders
                                 .post("/item")
-                                .content(jsonValue)
+                                .content(JsonUtils.writeJsonString(reqDrinkDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -92,22 +180,21 @@ class ItemControllerTest {
     }
 
     @Test
-    void createItem_throwInvalidTypeException() throws Exception {
+    void createItem_invalidType_return400() throws Exception {
         String type = "Invalid Type";
-
-        DrinkDTO reqDrinkDto = new DrinkDTO();
-        reqDrinkDto.setName("Test Drink");
-        reqDrinkDto.setDescription("Test Drink");
-        reqDrinkDto.setImg("Image URL");
-        reqDrinkDto.setPrice(10);
-        reqDrinkDto.setVolume(500);
-        reqDrinkDto.setType(type);
-
-        String jsonValue = JsonUtils.writeJsonString(reqDrinkDto);
+        DrinkDTO reqDrinkDto = DrinkDTO
+                .builder()
+                .name("Test Drink")
+                .description("Test Drink")
+                .img("Image URL")
+                .price(10)
+                .volume(500)
+                .type(type)
+                .build();
         mockMvc.perform(
                         MockMvcRequestBuilders
                                 .post("/item")
-                                .content(jsonValue)
+                                .content(JsonUtils.writeJsonString(reqDrinkDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -116,9 +203,8 @@ class ItemControllerTest {
     }
 
     @Test
-    void getItemById_found() throws Exception {
+    void getItemById_return200() throws Exception {
         Mockito.when(itemService.findById(expected.getId())).thenReturn(expected);
-
         mockMvc.perform(
                         MockMvcRequestBuilders
                                 .get("/item/details/" + expected.getId())
@@ -131,22 +217,21 @@ class ItemControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"SoftDrink", "Alcohol"})
-    void updateItem(String type) throws Exception {
-        DrinkDTO reqDrinkDto = new DrinkDTO();
-        reqDrinkDto.setId(1);
-        reqDrinkDto.setName("Test Drink");
-        reqDrinkDto.setDescription("Test Drink");
-        reqDrinkDto.setImg("Image URL");
-        reqDrinkDto.setPrice(10);
-        reqDrinkDto.setVolume(500);
-        reqDrinkDto.setType(type);
-        reqDrinkDto.setDrink(true);
-
-        String jsonValue = JsonUtils.writeJsonString(reqDrinkDto);
+    void updateItem_return200(String type) throws Exception {
+        DrinkDTO reqDrinkDto = DrinkDTO
+                .builder()
+                .name("Test Drink")
+                .description("Test Drink")
+                .img("Image URL")
+                .price(10)
+                .volume(500)
+                .type(type)
+                .isDrink(true)
+                .build();
         mockMvc.perform(
                         MockMvcRequestBuilders
                                 .put("/item")
-                                .content(jsonValue)
+                                .content(JsonUtils.writeJsonString(reqDrinkDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -156,7 +241,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void deleteItemById() throws Exception {
+    void deleteItemById_return200() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders
                                 .delete("/item")
