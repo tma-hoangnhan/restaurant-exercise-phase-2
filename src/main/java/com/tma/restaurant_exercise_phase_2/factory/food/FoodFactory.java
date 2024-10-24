@@ -1,4 +1,4 @@
-package com.tma.restaurant_exercise_phase_2.controller.patterns.factory.food;
+package com.tma.restaurant_exercise_phase_2.factory.food;
 
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
 import com.tma.restaurant_exercise_phase_2.model.food.Food;
