@@ -35,13 +35,13 @@ public class BillController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public String createBill() {
         Bill newBill = billService.save(new Bill(LocalDateTime.now()));
         return "Bill " + newBill.getId() + " created";
     }
 
-    @GetMapping("/get-details/{id}")
+    @GetMapping("/details/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BillDetailsDTO getBillById(@PathVariable("id") int id) {
         return billService.getBillDetailsById(id);
