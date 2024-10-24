@@ -210,4 +210,43 @@ class ItemServiceTest {
         // then
         assertEquals("ITEM WITH NAME " + updatedExpected.getName() + " HAS ALREADY EXISTED", result.getMessage());
     }
+
+    @Test
+    void searchItem() {
+        // given
+        String searchString = "Drink";
+        int page = 1, perPage = 10;
+
+        Pageable pageable = PageRequest.of(0, perPage);
+        Page<Item> expectedItemPage = new PageImpl<>(List.of(expected), pageable, 1);
+        when(itemRepository.searchItem(searchString, pageable)).thenReturn(expectedItemPage);
+
+        // when
+        CollectionResponse<ItemDTO> actual = itemService.searchItem(searchString, page, perPage);
+
+        // then
+        verify(itemRepository).searchItem(searchString, PageRequest.of(0, perPage));
+        assertEquals(expectedItemPage.getNumber(), actual.getPage() - 1);
+        assertEquals(expectedItemPage.getSize(), actual.getPerPage());
+        assertEquals(expectedItemPage.getTotalElements(), actual.getTotalItems());
+    }
+
+    @Test
+    void searchItem_searchStringIsNull() {
+        // given
+        int page = 1, perPage = 10;
+
+        Pageable pageable = PageRequest.of(0, perPage);
+        Page<Item> expectedItemPage = new PageImpl<>(List.of(expected), pageable, 1);
+        when(itemRepository.searchItem("", pageable)).thenReturn(expectedItemPage);
+
+        // when
+        CollectionResponse<ItemDTO> actual = itemService.searchItem(null, page, perPage);
+
+        // then
+        verify(itemRepository).searchItem("", PageRequest.of(0, perPage));
+        assertEquals(expectedItemPage.getNumber(), actual.getPage() - 1);
+        assertEquals(expectedItemPage.getSize(), actual.getPerPage());
+        assertEquals(expectedItemPage.getTotalElements(), actual.getTotalItems());
+    }
 }
