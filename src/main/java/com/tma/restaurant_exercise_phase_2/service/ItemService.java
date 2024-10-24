@@ -124,4 +124,17 @@ public class ItemService {
         item.setState(0);
         itemRepository.save(item);
     }
+
+    /**
+     * Search for Items based on name and description
+     * @param searchString input String for searching
+     * @param page page number of response content
+     * @param perPage number of elements per one page
+     * @return CollectionResponse containing Pagination properties and List of relevant Items
+     */
+    public CollectionResponse<ItemDTO> searchItem(String searchString, int page, int perPage) {
+        if (searchString == null) searchString = "";
+        Page<Item> itemPage = itemRepository.searchItem(searchString, PageRequest.of(page - 1, perPage));
+        return createCollectionResponse(itemPage);
+    }
 }

@@ -84,4 +84,13 @@ public class ItemController {
         return itemService.findById(id).toDTO();
     }
 
+    @GetMapping(path = "/search")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionResponse<ItemDTO> searchItem(
+            @RequestParam int page,
+            @RequestParam int perPage,
+            @RequestParam(value = "value", required = false) String search) {
+        if (page < 1 || perPage < 1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
+        return itemService.searchItem(search, page, perPage);
+    }
 }
