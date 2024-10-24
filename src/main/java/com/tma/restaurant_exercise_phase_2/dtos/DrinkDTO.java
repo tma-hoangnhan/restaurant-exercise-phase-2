@@ -1,6 +1,6 @@
 package com.tma.restaurant_exercise_phase_2.dtos;
 
-import com.tma.restaurant_exercise_phase_2.factory.FactoryProvider;
+import com.tma.restaurant_exercise_phase_2.patterns.factory.FactoryProvider;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
