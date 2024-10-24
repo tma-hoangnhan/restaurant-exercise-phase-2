@@ -3,10 +3,12 @@ package com.tma.restaurant_exercise_phase_2.dtos;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor
 @Getter
 @Setter
+@SuperBuilder
 public class ItemDTO {
     private int id;
     private String name;

@@ -35,14 +35,14 @@ public class ItemService {
     }
 
     private CollectionResponse<ItemDTO> createCollectionResponse(Page<Item> itemPage) {
-        CollectionResponse<ItemDTO> itemCollectionResponse = new CollectionResponse<>();
-        itemCollectionResponse.setPage(itemPage.getNumber() + 1);
-        itemCollectionResponse.setPerPage(itemPage.getSize());
-        itemCollectionResponse.setTotalPages(itemPage.getTotalPages());
-        itemCollectionResponse.setTotalItems(itemPage.getTotalElements());
-        itemCollectionResponse.setContents(itemPage.stream().map(Item::toDTO).collect(Collectors.toList()));
-
-        return itemCollectionResponse;
+        return CollectionResponse
+                .<ItemDTO>builder()
+                .page(itemPage.getNumber() + 1)
+                .perPage(itemPage.getSize())
+                .totalPages(itemPage.getTotalPages())
+                .totalItems(itemPage.getTotalElements())
+                .contents(itemPage.stream().map(Item::toDTO).collect(Collectors.toList()))
+                .build();
     }
 
     /**

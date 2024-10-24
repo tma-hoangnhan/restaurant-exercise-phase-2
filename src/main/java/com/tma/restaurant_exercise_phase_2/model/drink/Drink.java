@@ -30,15 +30,16 @@ public abstract class Drink extends Item {
 
     @Override
     public DrinkDTO toDTO() {
-        DrinkDTO drinkDTO = new DrinkDTO();
-        drinkDTO.setId(getId());
-        drinkDTO.setName(getName());
-        drinkDTO.setDescription(getDescription());
-        drinkDTO.setImg(getImg());
-        drinkDTO.setPrice(getPrice());
-        drinkDTO.setVolume(getVolume());
-        drinkDTO.setState(getState());
-        drinkDTO.setType(getType());
-        return drinkDTO;
+        return DrinkDTO
+                .builder()
+                .id(getId())
+                .name(getName())
+                .description(getDescription())
+                .img(getImg())
+                .price(getPrice())
+                .state(getState())
+                .volume(getVolume())
+                .type(getType())
+                .build();
     }
 }
