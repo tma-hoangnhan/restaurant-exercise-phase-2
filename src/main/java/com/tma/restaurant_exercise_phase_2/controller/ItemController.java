@@ -1,6 +1,6 @@
 package com.tma.restaurant_exercise_phase_2.controller;
 
-import com.tma.restaurant_exercise_phase_2.controller.patterns.factory.FactoryProvider;
+import com.tma.restaurant_exercise_phase_2.factory.FactoryProvider;
 import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
 import com.tma.restaurant_exercise_phase_2.model.Item;
