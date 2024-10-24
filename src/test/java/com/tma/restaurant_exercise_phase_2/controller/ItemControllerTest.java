@@ -70,9 +70,19 @@ class ItemControllerTest {
         }
 
         @Test
-        void getAllItems_invalidParameter_return400() throws Exception {
+        void getAllItems_invalidParameter_pageLessThan1_return400() throws Exception {
             mockMvc.perform(
-                            MockMvcRequestBuilders.get("/item?page=0&perPage=0").accept(MediaType.APPLICATION_JSON)
+                            MockMvcRequestBuilders.get("/item?page=0&perPage=10").accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$").isString())
+                    .andExpect(jsonPath("$").value("page AND perPage MUST BE LARGER THAN 0"));
+        }
+
+        @Test
+        void getAllItems_invalidParameter_perPageLessThan1_return400() throws Exception {
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/item?page=1&perPage=0").accept(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$").isString())
@@ -109,7 +119,17 @@ class ItemControllerTest {
         @Test
         void getDrinkMenu_invalidParameter_return400() throws Exception {
             mockMvc.perform(
-                            MockMvcRequestBuilders.get("/item/drink-menu?page=0&perPage=0").accept(MediaType.APPLICATION_JSON)
+                            MockMvcRequestBuilders.get("/item/drink-menu?page=0&perPage=10").accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$").isString())
+                    .andExpect(jsonPath("$").value("page AND perPage MUST BE LARGER THAN 0"));
+        }
+
+        @Test
+        void getDrinkMenu_invalidParameter_perPageLessThan1_return400() throws Exception {
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/item/drink-menu?page=1&perPage=0").accept(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$").isString())
@@ -146,7 +166,17 @@ class ItemControllerTest {
         @Test
         void getFoodMenu_invalidParameter_return400() throws Exception {
             mockMvc.perform(
-                            MockMvcRequestBuilders.get("/item/food-menu?page=0&perPage=0").accept(MediaType.APPLICATION_JSON)
+                            MockMvcRequestBuilders.get("/item/food-menu?page=0&perPage=10").accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$").isString())
+                    .andExpect(jsonPath("$").value("page AND perPage MUST BE LARGER THAN 0"));
+        }
+
+        @Test
+        void getFoodMenu_invalidParameter_perPageLessThan1_return400() throws Exception {
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/item/food-menu?page=1&perPage=0").accept(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$").isString())
@@ -155,9 +185,10 @@ class ItemControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"SoftDrink", "Alcohol"})
-    void createItem_return201(String type) throws Exception {
-        DrinkDTO reqDrinkDto = DrinkDTO
+    @ValueSource(booleans = {true, false})
+    void createItem_return201(boolean isDrink) throws Exception {
+        String type = isDrink ? "SoftDrink" : "Breakfast";
+        ItemDTO reqDrinkDto = ItemDTO
                 .builder()
                 .name("Test Drink")
                 .description("Test Drink")
@@ -165,7 +196,7 @@ class ItemControllerTest {
                 .price(10)
                 .volume(500)
                 .type(type)
-                .isDrink(true)
+                .isDrink(isDrink)
                 .build();
         mockMvc.perform(
                         MockMvcRequestBuilders
@@ -216,8 +247,9 @@ class ItemControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"SoftDrink", "Alcohol"})
-    void updateItem_return200(String type) throws Exception {
+    @ValueSource(booleans = {true, false})
+    void updateItem_return200(boolean isDrink) throws Exception {
+        String type = isDrink ? "SoftDrink" : "Breakfast";
         DrinkDTO reqDrinkDto = DrinkDTO
                 .builder()
                 .name("Test Drink")
@@ -226,7 +258,7 @@ class ItemControllerTest {
                 .price(10)
                 .volume(500)
                 .type(type)
-                .isDrink(true)
+                .isDrink(isDrink)
                 .build();
         mockMvc.perform(
                         MockMvcRequestBuilders

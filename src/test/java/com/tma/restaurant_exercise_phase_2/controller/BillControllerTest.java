@@ -72,9 +72,19 @@ class BillControllerTest {
     }
 
     @Test
-    void getAllBills_invalidParameters_return400() throws Exception {
+    void getAllBills_invalidParameters_pageLessThan1_return400() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/bill?page=0&perPage=0").accept(MediaType.APPLICATION_JSON)
+                        MockMvcRequestBuilders.get("/bill?page=0&perPage=10").accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").isString())
+                .andExpect(jsonPath("$").value("page AND perPage MUST BE LARGER THAN 0"));
+    }
+
+    @Test
+    void getAllBills_invalidParameters_perPageLessThan1_return400() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/bill?page=1&perPage=0").accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$").isString())
