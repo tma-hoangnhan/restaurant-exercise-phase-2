@@ -34,11 +34,12 @@ public class OrderItem {
     private int quantity;
 
     public OrderItemDTO toDTO() {
-        OrderItemDTO orderItemDTO = new OrderItemDTO();
-        orderItemDTO.setId(getId());
-        orderItemDTO.setBillId(getBill().getId());
-        orderItemDTO.setQuantity(getQuantity());
-        orderItemDTO.setItem(getItem().toDTO());
-        return orderItemDTO;
+        return OrderItemDTO
+                .builder()
+                .id(getId())
+                .billId(getBill().getId())
+                .quantity(getQuantity())
+                .item(getItem().toDTO())
+                .build();
     }
 }

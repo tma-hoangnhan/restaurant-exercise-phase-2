@@ -24,14 +24,15 @@ public abstract class Food extends Item {
 
     @Override
     public FoodDTO toDTO() {
-        FoodDTO foodDTO = new FoodDTO();
-        foodDTO.setId(getId());
-        foodDTO.setName(getName());
-        foodDTO.setDescription(getDescription());
-        foodDTO.setImg(getImg());
-        foodDTO.setPrice(getPrice());
-        foodDTO.setState(getState());
-        foodDTO.setType(getType());
-        return foodDTO;
+        return  FoodDTO
+                .builder()
+                .id(getId())
+                .name(getName())
+                .description(getDescription())
+                .img(getImg())
+                .price(getPrice())
+                .state(getState())
+                .type(getType())
+                .build();
     }
 }

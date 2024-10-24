@@ -33,14 +33,14 @@ public class BillService {
     public CollectionResponse<BillDTO> getAllBills(int page, int perPage) {
         Page<Bill> billPage = billRepository.getAllBills(PageRequest.of(page - 1, perPage));
 
-        CollectionResponse<BillDTO> billCollectionResponse = new CollectionResponse<>();
-        billCollectionResponse.setPage(billPage.getNumber() + 1);
-        billCollectionResponse.setPerPage(billPage.getSize());
-        billCollectionResponse.setTotalPages(billPage.getTotalPages());
-        billCollectionResponse.setTotalItems(billPage.getTotalElements());
-        billCollectionResponse.setContents(billPage.stream().map(Bill::toDTO).collect(Collectors.toList()));
-
-        return billCollectionResponse;
+        return CollectionResponse
+                .<BillDTO>builder()
+                .page(billPage.getNumber() + 1)
+                .perPage(billPage.getSize())
+                .totalPages(billPage.getTotalPages())
+                .totalItems(billPage.getTotalElements())
+                .contents(billPage.stream().map(Bill::toDTO).collect(Collectors.toList()))
+                .build();
     }
 
     public Bill save(Bill bill) {

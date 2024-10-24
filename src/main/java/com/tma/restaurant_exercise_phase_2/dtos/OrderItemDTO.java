@@ -1,12 +1,12 @@
 package com.tma.restaurant_exercise_phase_2.dtos;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class OrderItemDTO {
     private int id;
     private ItemDTO item;

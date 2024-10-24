@@ -55,19 +55,18 @@ public class Bill {
     }
 
     public BillDetailsDTO toBillDetailsDTO() {
-        BillDetailsDTO billDetailsDTO = new BillDetailsDTO();
-        billDetailsDTO.setId(getId());
-        billDetailsDTO.setOrderedTime(getOrderedTime());
-
         double totalPrice = 0;
         List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
         for (OrderItem oi : getOrderItemList()) {
             totalPrice += oi.getQuantity() * oi.getItem().getPrice();
             orderItemDTOList.add(oi.toDTO());
         }
-
-        billDetailsDTO.setTotalPrice(totalPrice);
-        billDetailsDTO.setOrderItemList(orderItemDTOList);
-        return billDetailsDTO;
+        return BillDetailsDTO
+                .builder()
+                .id(getId())
+                .orderedTime(getOrderedTime())
+                .totalPrice(totalPrice)
+                .orderItemList(orderItemDTOList)
+                .build();
     }
 }

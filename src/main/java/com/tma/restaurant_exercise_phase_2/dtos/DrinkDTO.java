@@ -5,10 +5,12 @@ import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor
 @Getter
 @Setter
+@SuperBuilder
 public class DrinkDTO extends ItemDTO{
     private int id;
     private String name;
