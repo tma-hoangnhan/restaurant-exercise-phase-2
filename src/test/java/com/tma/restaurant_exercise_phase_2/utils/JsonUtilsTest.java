@@ -15,8 +15,8 @@ class JsonUtilsTest {
         Drink sampleObject = new SoftDrink("Test Drink", "Test Drink", "Image URL", 10, 500);
         sampleObject.setId(1);
 
-        String expected = "{\"id\":1,\"name\":\"Test Drink\",\"description\":\"Test Drink\",\"img\":\"Image URL\"," +
-                "\"price\":10.0,\"state\":1,\"type\":\"SoftDrink\",\"volume\":500}";
+        String expected = "{\"id\":1,\"name\":\"Test Drink\",\"description\":\"Test Drink\",\"img\":\"Image URL\",\"price\":10.0," +
+                "\"state\":1,\"quantity\":0,\"type\":\"SoftDrink\",\"volume\":500}";
 
         // when
         String actual = JsonUtils.writeJsonString(sampleObject);
