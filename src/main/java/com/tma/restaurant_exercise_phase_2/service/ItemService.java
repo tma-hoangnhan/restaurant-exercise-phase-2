@@ -137,4 +137,14 @@ public class ItemService {
         Page<Item> itemPage = itemRepository.searchItem(searchString, PageRequest.of(page - 1, perPage));
         return createCollectionResponse(itemPage);
     }
+
+    /**
+     * Update the quantity of Item after placing OrderItem
+     * @param item Item needed to be updated the number of quantity
+     * @param orderedQuantity the quantity of OrderItem
+     */
+    public void updateItemQuantity(Item item, int orderedQuantity) {
+        item.setQuantity(item.getQuantity() - orderedQuantity);
+        itemRepository.save(item);
+    }
 }

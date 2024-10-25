@@ -35,6 +35,9 @@ public abstract class Item {
 
     @Column(name = "state")
     protected int state;
+
+    @Column(name = "quantity")
+    protected int quantity;
     
     @Transient
     protected String type;
@@ -57,13 +60,23 @@ public abstract class Item {
     }
 
     public ItemDTO toDTO() {
-        ItemDTO itemDTO = new ItemDTO();
-        itemDTO.setId(getId());
-        itemDTO.setName(getName());
-        itemDTO.setDescription(getDescription());
-        itemDTO.setImg(getImg());
-        itemDTO.setPrice(getPrice());
-        itemDTO.setType(getType());
-        return itemDTO;
+        return ItemDTO.builder()
+                .id(getId())
+                .name(getName())
+                .description(getDescription())
+                .img(getImg())
+                .price(getPrice())
+                .state(getState())
+                .quantity(getQuantity())
+                .type(getType())
+                .build();
+    }
+
+    /**
+     * Check state of an Item
+     * @return true if the state == 1
+     */
+    public boolean available() {
+        return this.state == 1;
     }
 }

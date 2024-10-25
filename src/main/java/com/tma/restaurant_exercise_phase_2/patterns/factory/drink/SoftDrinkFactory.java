@@ -20,6 +20,7 @@ public class SoftDrinkFactory implements DrinkFactory {
         drink.setPrice(itemDTO.getPrice());
         drink.setVolume(itemDTO.getVolume());
         drink.setState(1);
+        drink.setQuantity(itemDTO.getQuantity());
         return drink;
     }
 }

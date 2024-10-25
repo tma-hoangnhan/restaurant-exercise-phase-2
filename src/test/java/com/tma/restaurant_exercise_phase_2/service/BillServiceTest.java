@@ -11,6 +11,7 @@ import com.tma.restaurant_exercise_phase_2.model.bill.OrderItem;
 import com.tma.restaurant_exercise_phase_2.model.food.Breakfast;
 import com.tma.restaurant_exercise_phase_2.repository.BillRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -146,74 +147,6 @@ class BillServiceTest {
     }
 
     @Test
-    void addItemToBill_updateQuantity() {
-        // given
-        OrderItemDTO reqOrderItem = new OrderItemDTO();
-        reqOrderItem.setId(1);
-        reqOrderItem.setBillId(1);
-        reqOrderItem.setItem(orderItem1.getItem().toDTO());
-        reqOrderItem.setQuantity(5);
-
-        when(itemService.findById(orderItem1.getItem().getId())).thenReturn(orderItem1.getItem());
-        when(billRepository.findById(1)).thenReturn(Optional.of(expected));
-
-        // when
-        String result = billService.addItemToBill(reqOrderItem);
-
-        // then
-        verify(orderItemService).save(orderItem1);
-        assertEquals(6, orderItem1.getQuantity());
-        assertEquals("5 Food have been added into Bill 1", result);
-    }
-
-    @Test
-    void addItemToBill_createNewOrderItem() {
-        // given
-        OrderItemDTO reqOrderItem = new OrderItemDTO();
-        reqOrderItem.setId(1);
-        reqOrderItem.setBillId(1);
-        reqOrderItem.setQuantity(5);
-
-        Item newItem = new Breakfast("RandomFood", "Food", "Food", 30);
-        newItem.setId(4);
-        reqOrderItem.setItem(newItem.toDTO());
-
-        when(itemService.findById(4)).thenReturn(newItem);
-        when(billRepository.findById(1)).thenReturn(Optional.of(expected));
-
-        // when
-        String result = billService.addItemToBill(reqOrderItem);
-
-        // then
-        assertEquals("5 RandomFood have been added into Bill 1", result);
-    }
-
-    @Test
-    void addItemToBill_throwCannotAddItemToBillException() {
-        // given
-        OrderItemDTO reqOrderItem = new OrderItemDTO();
-        reqOrderItem.setId(1);
-        reqOrderItem.setBillId(1);
-        reqOrderItem.setQuantity(5);
-
-        Item newItem = new Breakfast("RandomFood", "Food", "Food", 30);
-        newItem.setId(4);
-        newItem.setState(0);
-        reqOrderItem.setItem(newItem.toDTO());
-
-        when(itemService.findById(4)).thenReturn(newItem);
-
-        // when
-        CannotAddItemToBillException result = assertThrows(
-                CannotAddItemToBillException.class,
-                () -> billService.addItemToBill(reqOrderItem)
-        );
-
-        // then
-        assertEquals("ITEM WITH ID: 4 IS NOT AVAILABLE", result.getMessage());
-    }
-
-    @Test
     void deleteById() {
         // given
         when(billRepository.findById(1)).thenReturn(Optional.of(expected));
@@ -224,6 +157,132 @@ class BillServiceTest {
         // then
         verify(billRepository).deleteById(1);
         assertEquals("Bill with ID: 1 deleted", result);
+    }
+
+    @Nested
+    class addItemToBill {
+        @Test
+        void addItemToBill_updateQuantity() {
+            // given
+            OrderItemDTO reqOrderItem = new OrderItemDTO();
+            reqOrderItem.setId(1);
+            reqOrderItem.setBillId(1);
+            reqOrderItem.setItem(orderItem1.getItem().toDTO());
+            reqOrderItem.setQuantity(5);
+
+            orderItem1.getItem().setQuantity(5);
+            when(itemService.findById(orderItem1.getItem().getId())).thenReturn(orderItem1.getItem());
+            when(billRepository.findById(1)).thenReturn(Optional.of(expected));
+
+            // when
+            String result = billService.addItemToBill(reqOrderItem);
+
+            // then
+            verify(orderItemService).save(orderItem1);
+            assertEquals(6, orderItem1.getQuantity());
+            assertEquals("5 Food have been added into Bill 1", result);
+        }
+
+        @Test
+        void addItemToBill_createNewOrderItem() {
+            // given
+            OrderItemDTO reqOrderItem = new OrderItemDTO();
+            reqOrderItem.setId(1);
+            reqOrderItem.setBillId(1);
+            reqOrderItem.setQuantity(5);
+
+            Item newItem = new Breakfast("RandomFood", "Food", "Food", 30);
+            newItem.setId(4);
+            newItem.setQuantity(5);
+            reqOrderItem.setItem(newItem.toDTO());
+
+            when(itemService.findById(4)).thenReturn(newItem);
+            when(billRepository.findById(1)).thenReturn(Optional.of(expected));
+
+            // when
+            String result = billService.addItemToBill(reqOrderItem);
+
+            // then
+            assertEquals("5 RandomFood have been added into Bill 1", result);
+        }
+
+        @Test
+        void addItemToBill_itemIsNotAvailable_throwCannotAddItemToBillException() {
+            // given
+            OrderItemDTO reqOrderItem = new OrderItemDTO();
+            reqOrderItem.setId(1);
+            reqOrderItem.setBillId(1);
+            reqOrderItem.setQuantity(5);
+
+            Item newItem = new Breakfast("RandomFood", "Food", "Food", 30);
+            newItem.setId(4);
+            newItem.setState(0);
+            reqOrderItem.setItem(newItem.toDTO());
+
+            when(itemService.findById(4)).thenReturn(newItem);
+
+            // when
+            CannotAddItemToBillException result = assertThrows(
+                    CannotAddItemToBillException.class,
+                    () -> billService.addItemToBill(reqOrderItem)
+            );
+
+            // then
+            assertEquals("ITEM WITH ID: 4 IS NOT AVAILABLE", result.getMessage());
+        }
+
+        @Test
+        void addItemToBill_orderQuantityIsExceeded_throwCannotAddItemToBillException() {
+            // given
+            OrderItemDTO reqOrderItem = new OrderItemDTO();
+            reqOrderItem.setId(1);
+            reqOrderItem.setBillId(1);
+            reqOrderItem.setQuantity(10);
+
+            Item newItem = new Breakfast("RandomFood", "Food", "Food", 30);
+            newItem.setId(4);
+            newItem.setState(1);
+            newItem.setQuantity(5);
+            reqOrderItem.setItem(newItem.toDTO());
+
+            when(itemService.findById(4)).thenReturn(newItem);
+
+            // when
+            CannotAddItemToBillException result = assertThrows(
+                    CannotAddItemToBillException.class,
+                    () -> billService.addItemToBill(reqOrderItem)
+            );
+
+            // then
+            assertEquals("QUANTITY OF ORDERED RandomFood(10) IS LARGER THAN THE AVAILABLE ONE(5)",
+                    result.getMessage());
+        }
+
+        @Test
+        void addItemToBill_quantityIsLessThan1_throwCannotAddItemToBillException() {
+            // given
+            OrderItemDTO reqOrderItem = new OrderItemDTO();
+            reqOrderItem.setId(1);
+            reqOrderItem.setBillId(1);
+            reqOrderItem.setQuantity(0);
+
+            Item newItem = new Breakfast("RandomFood", "Food", "Food", 30);
+            newItem.setId(4);
+            newItem.setState(1);
+            newItem.setQuantity(5);
+            reqOrderItem.setItem(newItem.toDTO());
+
+            when(itemService.findById(4)).thenReturn(newItem);
+
+            // when
+            CannotAddItemToBillException result = assertThrows(
+                    CannotAddItemToBillException.class,
+                    () -> billService.addItemToBill(reqOrderItem)
+            );
+
+            // then
+            assertEquals("QUANTITY OF ORDER ITEM MUST BE >= 1", result.getMessage());
+        }
     }
 
 }

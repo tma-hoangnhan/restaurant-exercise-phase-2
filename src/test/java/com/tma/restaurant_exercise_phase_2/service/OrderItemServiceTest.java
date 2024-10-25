@@ -1,7 +1,9 @@
 package com.tma.restaurant_exercise_phase_2.service;
 
 import com.tma.restaurant_exercise_phase_2.dtos.OrderItemDTO;
+import com.tma.restaurant_exercise_phase_2.exceptions.CannotAddItemToBillException;
 import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
+import com.tma.restaurant_exercise_phase_2.model.Item;
 import com.tma.restaurant_exercise_phase_2.model.bill.Bill;
 import com.tma.restaurant_exercise_phase_2.model.bill.OrderItem;
 import com.tma.restaurant_exercise_phase_2.model.food.Breakfast;
@@ -21,20 +23,24 @@ import static org.mockito.Mockito.when;
 class OrderItemServiceTest {
     private OrderItemService orderItemService;
 
-    @Mock
-    private OrderItemRepository orderItemRepository;
+    @Mock private OrderItemRepository orderItemRepository;
+    @Mock private ItemService itemService;
     OrderItem expected;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        orderItemService = new OrderItemService(orderItemRepository);
+        orderItemService = new OrderItemService(orderItemRepository, itemService);
 
         expected = new OrderItem();
         expected.setId(1);
         expected.setBill(new Bill(1));
         expected.setQuantity(1);
-        expected.setItem(new Breakfast("Food", "Food", "Food", 30));
+
+        Item item = new Breakfast("Food", "Food", "Food", 30);
+        item.setId(1);
+        item.setQuantity(5);
+        expected.setItem(item);
     }
 
     @Test
@@ -74,7 +80,13 @@ class OrderItemServiceTest {
     @Test
     void updateOrderItem_quantityGreaterOrEqualsTo1() {
         // given
+        Item item = new Breakfast("RandomFood", "Food", "Food", 30);
+        item.setId(1);
+        item.setQuantity(5);
+        when(itemService.findById(1)).thenReturn(item);
+
         OrderItemDTO reqOrderItem = expected.toDTO();
+        reqOrderItem.setItem(item.toDTO());
         reqOrderItem.setQuantity(5);
 
         when(orderItemRepository.findById(1)).thenReturn(Optional.of(expected));
@@ -102,6 +114,29 @@ class OrderItemServiceTest {
         // then
         verify(orderItemRepository).deleteById(1);
         assertEquals("Order Item with ID: 1 deleted", result);
+    }
+
+    @Test
+    void updateOrderItem_quantityIsExceeded() {
+        // given
+        Item item = new Breakfast("RandomFood", "Food", "Food", 30);
+        item.setId(1);
+        item.setQuantity(5);
+        when(itemService.findById(1)).thenReturn(item);
+
+        OrderItemDTO reqOrderItem = expected.toDTO();
+        reqOrderItem.setItem(item.toDTO());
+        reqOrderItem.setQuantity(10);
+
+        expected.setItem(item);
+        when(orderItemRepository.findById(1)).thenReturn(Optional.of(expected));
+
+        // when
+        CannotAddItemToBillException result = assertThrows(
+                CannotAddItemToBillException.class,
+                () -> orderItemService.updateOrderItem(reqOrderItem)
+        );
+        assertEquals("QUANTITY OF ORDERED RandomFood(10) IS LARGER THAN THE AVAILABLE ONE(6)", result.getMessage());
     }
 
     @Test

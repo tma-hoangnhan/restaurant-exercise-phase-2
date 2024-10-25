@@ -19,6 +19,7 @@ public class DinnerFactory implements FoodFactory {
         food.setImg(itemDTO.getImg());
         food.setPrice(itemDTO.getPrice());
         food.setState(1);
+        food.setQuantity(itemDTO.getQuantity());
         return food;
     }
 }
