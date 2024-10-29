@@ -1,6 +1,7 @@
 package com.tma.restaurant_exercise_phase_2.service;
 
 import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
+import com.tma.restaurant_exercise_phase_2.dtos.FilterRequest;
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemAlreadyDeletedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedException;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +27,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -212,41 +215,39 @@ class ItemServiceTest {
     }
 
     @Test
-    void searchItem() {
+    void filterItem() throws ClassNotFoundException {
         // given
-        String searchString = "Drink";
         int page = 1, perPage = 10;
-
         Pageable pageable = PageRequest.of(0, perPage);
+
+        FilterRequest request = new FilterRequest(List.of("SoftDrink"));
+
+        List<Class<?>> classes = List.of(Class.forName("com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink"));
         Page<Item> expectedItemPage = new PageImpl<>(List.of(expected), pageable, 1);
-        when(itemRepository.searchItem(searchString, pageable)).thenReturn(expectedItemPage);
+        when(itemRepository.filterItem(Mockito.anyList(), eq(pageable))).thenReturn(expectedItemPage);
 
         // when
-        CollectionResponse<ItemDTO> actual = itemService.searchItem(searchString, page, perPage);
+        CollectionResponse<ItemDTO> actual = itemService.filterItem(request, page, perPage);
 
         // then
-        verify(itemRepository).searchItem(searchString, PageRequest.of(0, perPage));
+        verify(itemRepository).filterItem(classes, pageable);
         assertEquals(expectedItemPage.getNumber(), actual.getPage() - 1);
         assertEquals(expectedItemPage.getSize(), actual.getPerPage());
         assertEquals(expectedItemPage.getTotalElements(), actual.getTotalItems());
     }
 
     @Test
-    void searchItem_searchStringIsNull() {
+    void filterItem_throwNoItemFoundException() {
         // given
         int page = 1, perPage = 10;
-
-        Pageable pageable = PageRequest.of(0, perPage);
-        Page<Item> expectedItemPage = new PageImpl<>(List.of(expected), pageable, 1);
-        when(itemRepository.searchItem("", pageable)).thenReturn(expectedItemPage);
+        FilterRequest request = new FilterRequest(List.of("NotExisted"));
 
         // when
-        CollectionResponse<ItemDTO> actual = itemService.searchItem(null, page, perPage);
+        NoItemFoundException result = assertThrows(
+                NoItemFoundException.class,
+                () -> itemService.filterItem(request, page, perPage)
+        );
 
-        // then
-        verify(itemRepository).searchItem("", PageRequest.of(0, perPage));
-        assertEquals(expectedItemPage.getNumber(), actual.getPage() - 1);
-        assertEquals(expectedItemPage.getSize(), actual.getPerPage());
-        assertEquals(expectedItemPage.getTotalElements(), actual.getTotalItems());
+        assertEquals("NO CLASS FOUND WITH: NotExisted", result.getMessage());
     }
 }

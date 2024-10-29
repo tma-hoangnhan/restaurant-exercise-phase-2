@@ -2,6 +2,7 @@ package com.tma.restaurant_exercise_phase_2.controller;
 
 import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.dtos.DrinkDTO;
+import com.tma.restaurant_exercise_phase_2.dtos.FilterRequest;
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -185,9 +187,10 @@ class ItemControllerTest {
     }
 
     @Nested
-    class searchItem {
+    class filterItem {
+        FilterRequest request = new FilterRequest(List.of("SoftDrink"));
         @Test
-        void searchItem_return200() throws Exception {
+        void filterItem_return200() throws Exception {
             int page = 1; int perPage = 10;
             CollectionResponse<ItemDTO> response = CollectionResponse
                     .<ItemDTO>builder()
@@ -197,9 +200,13 @@ class ItemControllerTest {
                     .totalItems(1)
                     .contents(List.of(expected.toDTO()))
                     .build();
-            Mockito.when(itemService.searchItem("drink", page, perPage)).thenReturn(response);
+            Mockito.when(itemService.filterItem(Mockito.any(FilterRequest.class), eq(page), eq(perPage))).thenReturn(response);
             mockMvc.perform(
-                            MockMvcRequestBuilders.get("/item/search?value=drink&page=1&perPage=10").accept(MediaType.APPLICATION_JSON)
+                            MockMvcRequestBuilders
+                                    .post("/item/filter?page=1&perPage=10")
+                                    .content(JsonUtils.writeJsonString(request))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$").isMap())
@@ -211,9 +218,13 @@ class ItemControllerTest {
         }
 
         @Test
-        void searchItem_invalidParameter_return400() throws Exception {
+        void filterItem_invalidParameter_return400() throws Exception {
             mockMvc.perform(
-                            MockMvcRequestBuilders.get("/item/search?value=drink&page=0&perPage=10").accept(MediaType.APPLICATION_JSON)
+                            MockMvcRequestBuilders
+                                    .post("/item/filter?page=0&perPage=10")
+                                    .content(JsonUtils.writeJsonString(request))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$").isString())
@@ -221,9 +232,13 @@ class ItemControllerTest {
         }
 
         @Test
-        void searchItem_invalidParameter_perPageLessThan1_return400() throws Exception {
+        void filterItem_invalidParameter_perPageLessThan1_return400() throws Exception {
             mockMvc.perform(
-                            MockMvcRequestBuilders.get("/item/search?value=drink&page=1&perPage=0").accept(MediaType.APPLICATION_JSON)
+                            MockMvcRequestBuilders
+                                    .post("/item/filter?page=1&perPage=0")
+                                    .content(JsonUtils.writeJsonString(request))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$").isString())
