@@ -1,6 +1,7 @@
 package com.tma.restaurant_exercise_phase_2.service;
 
 import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
+import com.tma.restaurant_exercise_phase_2.dtos.FilterRequest;
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemAlreadyDeletedException;
 import com.tma.restaurant_exercise_phase_2.exceptions.ItemNameAlreadyExistedException;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -125,16 +127,22 @@ public class ItemService {
         itemRepository.save(item);
     }
 
-    /**
-     * Search for Items based on name and description
-     * @param searchString input String for searching
-     * @param page page number of response content
-     * @param perPage number of elements per one page
-     * @return CollectionResponse containing Pagination properties and List of relevant Items
-     */
-    public CollectionResponse<ItemDTO> searchItem(String searchString, int page, int perPage) {
-        if (searchString == null) searchString = "";
-        Page<Item> itemPage = itemRepository.searchItem(searchString, PageRequest.of(page - 1, perPage));
+    private Class<?> findClassByClassName(String className) {
+        try {
+            return Class.forName("com.tma.restaurant_exercise_phase_2.model.drink." + className);
+        } catch (ClassNotFoundException e) {
+            try {
+                return Class.forName("com.tma.restaurant_exercise_phase_2.model.food." + className);
+            } catch (ClassNotFoundException ex) {
+                throw new NoItemFoundException("NO CLASS FOUND WITH: " + className);
+            }
+        }
+    }
+
+    public CollectionResponse<ItemDTO> filterItem(FilterRequest request, int page, int perPage) {
+        List<Class<?>> classes = request.getItemTypes().stream().map(this::findClassByClassName).collect(Collectors.toList());
+
+        Page<Item> itemPage = itemRepository.filterItem(classes, PageRequest.of(page - 1, perPage));
         return createCollectionResponse(itemPage);
     }
 

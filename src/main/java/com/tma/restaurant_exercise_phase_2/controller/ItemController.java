@@ -1,5 +1,6 @@
 package com.tma.restaurant_exercise_phase_2.controller;
 
+import com.tma.restaurant_exercise_phase_2.dtos.FilterRequest;
 import com.tma.restaurant_exercise_phase_2.patterns.factory.FactoryProvider;
 import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
@@ -84,13 +85,12 @@ public class ItemController {
         return itemService.findById(id).toDTO();
     }
 
-    @GetMapping(path = "/search")
+    @PostMapping(path = "/filter")
     @ResponseStatus(HttpStatus.OK)
-    public CollectionResponse<ItemDTO> searchItem(
-            @RequestParam int page,
-            @RequestParam int perPage,
-            @RequestParam(value = "value", required = false) String search) {
+    public CollectionResponse<ItemDTO> filterItem(@RequestBody FilterRequest request,
+                                                  @RequestParam(defaultValue = "1") int page,
+                                                  @RequestParam(defaultValue = "20") int perPage) {
         if (page < 1 || perPage < 1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
-        return itemService.searchItem(search, page, perPage);
+        return itemService.filterItem(request, page, perPage);
     }
 }
