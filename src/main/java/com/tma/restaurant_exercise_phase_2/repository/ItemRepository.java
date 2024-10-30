@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Query("SELECT i FROM Item i" +
-            " WHERE CONCAT(i.name, i.description) LIKE CONCAT('%', ?1, '%')" +
             " ORDER BY CASE " +
             " WHEN TYPE(i) = SoftDrink THEN 1" +
             " WHEN TYPE(i) = Alcohol THEN 2" +
