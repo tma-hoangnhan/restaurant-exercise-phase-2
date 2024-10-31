@@ -1,7 +1,7 @@
 package com.tma.restaurant_exercise_phase_2.model.food;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "lunch")
