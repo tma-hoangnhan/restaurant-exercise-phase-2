@@ -17,7 +17,7 @@ import jakarta.persistence.*;
 @Table(name = "item")
 public abstract class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
     @Column(name = "id")
     protected int id;
 
