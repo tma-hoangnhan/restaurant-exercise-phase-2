@@ -1,6 +1,5 @@
 package com.tma.restaurant_exercise_phase_2.security.services;
 
-import com.tma.restaurant_exercise_phase_2.exceptions.SecurityException;
 import com.tma.restaurant_exercise_phase_2.model.User;
 import com.tma.restaurant_exercise_phase_2.security.models.AuthenticationRequest;
 import com.tma.restaurant_exercise_phase_2.security.models.AuthenticationResponse;
@@ -9,7 +8,6 @@ import com.tma.restaurant_exercise_phase_2.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,16 +59,12 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        try {
-            authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            new String(request.getPassword())
-                    )
-            );
-        } catch (BadCredentialsException ex) {
-            throw new SecurityException(ex.getMessage());
-        }
+        authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        new String(request.getPassword())
+                )
+        );
 
         User user = userService.getUserByEmail(request.getEmail());
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()

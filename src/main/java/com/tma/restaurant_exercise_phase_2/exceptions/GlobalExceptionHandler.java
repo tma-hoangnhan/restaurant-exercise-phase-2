@@ -1,14 +1,13 @@
 package com.tma.restaurant_exercise_phase_2.exceptions;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.security.InvalidParameterException;
 
-@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
@@ -57,8 +56,8 @@ public class GlobalExceptionHandler {
         return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = SecurityException.class)
-    public ExceptionResponse handleSecurityException(SecurityException ex) {
+    @ExceptionHandler(value = BadCredentialsException.class)
+    public ExceptionResponse handleBadCredentialsException(BadCredentialsException ex) {
         return new ExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
