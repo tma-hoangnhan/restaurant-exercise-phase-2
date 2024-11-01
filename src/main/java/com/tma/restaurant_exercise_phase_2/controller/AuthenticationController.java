@@ -4,12 +4,10 @@ import com.tma.restaurant_exercise_phase_2.security.models.AuthenticationRequest
 import com.tma.restaurant_exercise_phase_2.security.models.AuthenticationResponse;
 import com.tma.restaurant_exercise_phase_2.security.models.RegisterRequest;
 import com.tma.restaurant_exercise_phase_2.security.services.AuthenticationService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RestController
 @RequestMapping(path = "/auth")
 public class AuthenticationController {

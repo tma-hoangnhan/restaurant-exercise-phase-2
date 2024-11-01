@@ -8,7 +8,6 @@ import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
 import com.tma.restaurant_exercise_phase_2.service.ItemService;
 import com.tma.restaurant_exercise_phase_2.utils.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@Slf4j
 @WebMvcTest(ItemController.class)
 class ItemControllerTest {
     @Autowired

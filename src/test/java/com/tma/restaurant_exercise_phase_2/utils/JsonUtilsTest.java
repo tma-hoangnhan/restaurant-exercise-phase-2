@@ -3,11 +3,9 @@ package com.tma.restaurant_exercise_phase_2.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
 class JsonUtilsTest {
     @Test
     void writeJsonString() throws JsonProcessingException {

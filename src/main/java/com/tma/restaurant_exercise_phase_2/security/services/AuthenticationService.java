@@ -5,7 +5,6 @@ import com.tma.restaurant_exercise_phase_2.security.models.AuthenticationRequest
 import com.tma.restaurant_exercise_phase_2.security.models.AuthenticationResponse;
 import com.tma.restaurant_exercise_phase_2.security.models.RegisterRequest;
 import com.tma.restaurant_exercise_phase_2.service.UserService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
 
-@Slf4j
 @Service
 public class AuthenticationService {
     private final UserService userService;

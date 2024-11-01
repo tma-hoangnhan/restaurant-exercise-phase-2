@@ -6,13 +6,11 @@ import com.tma.restaurant_exercise_phase_2.exceptions.NoItemFoundException;
 import com.tma.restaurant_exercise_phase_2.model.Item;
 import com.tma.restaurant_exercise_phase_2.model.bill.OrderItem;
 import com.tma.restaurant_exercise_phase_2.repository.OrderItemRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Slf4j
 @Service
 public class OrderItemService {
     private final OrderItemRepository orderItemRepository;
