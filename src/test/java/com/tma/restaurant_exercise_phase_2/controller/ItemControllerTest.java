@@ -6,9 +6,9 @@ import com.tma.restaurant_exercise_phase_2.dtos.FilterRequest;
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
 import com.tma.restaurant_exercise_phase_2.model.drink.Drink;
 import com.tma.restaurant_exercise_phase_2.model.drink.SoftDrink;
+import com.tma.restaurant_exercise_phase_2.security.services.JwtService;
 import com.tma.restaurant_exercise_phase_2.service.ItemService;
 import com.tma.restaurant_exercise_phase_2.utils.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,9 +16,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -28,14 +30,14 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@Slf4j
 @WebMvcTest(ItemController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class ItemControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private ItemService itemService;
+    @MockBean private ItemService itemService;
+    @MockBean private JwtService jwtService;
 
     Drink expected;
 
@@ -46,6 +48,7 @@ class ItemControllerTest {
     }
 
     @Nested
+    @WithMockUser(username = "user@gmail.com")
     class getListOfItems {
         @Test
         void getAllItems_return200() throws Exception {
@@ -93,6 +96,7 @@ class ItemControllerTest {
     }
 
     @Nested
+    @WithMockUser(username = "user@gmail.com")
     class getDrinkMenu {
         @Test
         void getDrinkMenu_return200() throws Exception {
@@ -140,6 +144,7 @@ class ItemControllerTest {
     }
 
     @Nested
+    @WithMockUser(username = "user@gmail.com")
     class getFoodMenu {
         @Test
         void getFoodMenu_return200() throws Exception {
@@ -187,6 +192,7 @@ class ItemControllerTest {
     }
 
     @Nested
+    @WithMockUser(username = "user@gmail.com")
     class filterItem {
         FilterRequest request = new FilterRequest(List.of("SoftDrink"));
         @Test
@@ -248,6 +254,7 @@ class ItemControllerTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
+    @WithMockUser(username = "user@gmail.com")
     void createItem_return201(boolean isDrink) throws Exception {
         String type = isDrink ? "SoftDrink" : "Breakfast";
         ItemDTO reqDrinkDto = ItemDTO
@@ -273,6 +280,7 @@ class ItemControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void createItem_invalidType_return400() throws Exception {
         String type = "Invalid Type";
         DrinkDTO reqDrinkDto = DrinkDTO
@@ -296,6 +304,7 @@ class ItemControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void getItemById_return200() throws Exception {
         Mockito.when(itemService.findById(expected.getId())).thenReturn(expected);
         mockMvc.perform(
@@ -310,6 +319,7 @@ class ItemControllerTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
+    @WithMockUser(username = "user@gmail.com")
     void updateItem_return200(boolean isDrink) throws Exception {
         String type = isDrink ? "SoftDrink" : "Breakfast";
         DrinkDTO reqDrinkDto = DrinkDTO
@@ -335,6 +345,7 @@ class ItemControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void deleteItemById_return200() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders

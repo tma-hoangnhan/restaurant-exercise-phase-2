@@ -1,15 +1,21 @@
 package com.tma.restaurant_exercise_phase_2.exceptions;
 
-import lombok.extern.slf4j.Slf4j;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.security.InvalidParameterException;
 
-@Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(value = Exception.class)
+    public ExceptionResponse handleException(Exception ex) {
+        ex.printStackTrace();
+        return new ExceptionResponse("INTERNAL SERVER ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(value = NoItemFoundException.class)
     public ExceptionResponse handleNoItemFoundException(NoItemFoundException ex) {
         return new ExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
@@ -38,5 +44,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ItemAlreadyDeletedException.class)
     public ExceptionResponse handleItemAlreadyDeletedException(ItemAlreadyDeletedException ex) {
         return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value= UserNotFoundException.class)
+    public ExceptionResponse handleUserNotFoundException(UserNotFoundException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = UserAlreadyExistedException.class)
+    public ExceptionResponse handleUserReadyExistedException(UserAlreadyExistedException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = BadCredentialsException.class)
+    public ExceptionResponse handleBadCredentialsException(BadCredentialsException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = ExpiredJwtException.class)
+    public ExceptionResponse handleExpiredJwtException(ExpiredJwtException ex) {
+        return new ExceptionResponse("TOKEN HAS EXPIRED", HttpStatus.UNAUTHORIZED);
     }
 }
