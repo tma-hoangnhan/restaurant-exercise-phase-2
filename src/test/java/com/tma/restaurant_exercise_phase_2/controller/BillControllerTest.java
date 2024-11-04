@@ -6,6 +6,7 @@ import com.tma.restaurant_exercise_phase_2.dtos.OrderItemDTO;
 import com.tma.restaurant_exercise_phase_2.model.bill.Bill;
 import com.tma.restaurant_exercise_phase_2.model.bill.OrderItem;
 import com.tma.restaurant_exercise_phase_2.model.food.Breakfast;
+import com.tma.restaurant_exercise_phase_2.security.services.JwtService;
 import com.tma.restaurant_exercise_phase_2.service.BillService;
 import com.tma.restaurant_exercise_phase_2.service.OrderItemService;
 import com.tma.restaurant_exercise_phase_2.utils.JsonUtils;
@@ -13,9 +14,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -26,12 +29,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BillController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BillControllerTest {
     @Autowired
     MockMvc mockMvc;
 
     @MockBean private BillService billService;
     @MockBean private OrderItemService orderItemService;
+    @MockBean private JwtService jwtService;
 
     Bill expectedBill;
     OrderItem expectedOrderItem;
@@ -48,6 +53,7 @@ class BillControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void getAllBills_return200() throws Exception {
         int page = 1, perPage = 10;
         CollectionResponse<BillDTO> response = CollectionResponse.<BillDTO>builder()
@@ -72,6 +78,7 @@ class BillControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void getAllBills_invalidParameters_pageLessThan1_return400() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bill?page=0&perPage=10").accept(MediaType.APPLICATION_JSON)
@@ -82,6 +89,7 @@ class BillControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void getAllBills_invalidParameters_perPageLessThan1_return400() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/bill?page=1&perPage=0").accept(MediaType.APPLICATION_JSON)
@@ -92,6 +100,7 @@ class BillControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void createBill_return201() throws Exception {
         Mockito.when(billService.save(Mockito.any(Bill.class))).thenReturn(expectedBill);
         mockMvc.perform(
@@ -103,6 +112,7 @@ class BillControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void getBillById_return200() throws Exception {
         Mockito.when(billService.getBillDetailsById(1)).thenReturn(expectedBill.toBillDetailsDTO());
         mockMvc.perform(
@@ -115,6 +125,7 @@ class BillControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void deleteBillById_return200() throws Exception {
         Mockito.when(billService.deleteById(1)).thenReturn("Bill with ID: 1 deleted");
         mockMvc.perform(
@@ -126,6 +137,7 @@ class BillControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void addItemToBill_return200() throws Exception {
         Mockito.when(billService.addItemToBill(Mockito.any(OrderItemDTO.class))).thenReturn("1 Food have been added into Bill 1");
         mockMvc.perform(
@@ -141,6 +153,7 @@ class BillControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void updateItem_return200() throws Exception {
         Mockito.when(orderItemService.updateOrderItem(Mockito.any(OrderItemDTO.class))).thenReturn("Order Item with ID: 1 updated");
         mockMvc.perform(
@@ -156,6 +169,7 @@ class BillControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user@gmail.com")
     void deleteOrderItem_return200() throws Exception {
         Mockito.when(orderItemService.deleteById(1)).thenReturn("Order Item with ID: 1 deleted");
         mockMvc.perform(
