@@ -3,6 +3,7 @@ package com.tma.restaurant_exercise_phase_2.exceptions;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -64,5 +65,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ExpiredJwtException.class)
     public ExceptionResponse handleExpiredJwtException(ExpiredJwtException ex) {
         return new ExceptionResponse("TOKEN HAS EXPIRED", HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = InternalAuthenticationServiceException.class)
+    public ExceptionResponse handleInternalAuthenticationServiceException(InternalAuthenticationServiceException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }
