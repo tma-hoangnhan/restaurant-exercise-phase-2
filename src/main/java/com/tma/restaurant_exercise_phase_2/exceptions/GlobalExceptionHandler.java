@@ -1,11 +1,14 @@
 package com.tma.restaurant_exercise_phase_2.exceptions;
 
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.security.InvalidParameterException;
 
@@ -62,13 +65,28 @@ public class GlobalExceptionHandler {
         return new ExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(value = ExpiredJwtException.class)
-    public ExceptionResponse handleExpiredJwtException(ExpiredJwtException ex) {
-        return new ExceptionResponse("TOKEN HAS EXPIRED", HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler(value = JwtException.class)
+    public ExceptionResponse handleJwtException(JwtException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(value = InternalAuthenticationServiceException.class)
     public ExceptionResponse handleInternalAuthenticationServiceException(InternalAuthenticationServiceException ex) {
         return new ExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+    public ExceptionResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = NoResourceFoundException.class)
+    public ExceptionResponse handleNoResourceFoundException(NoResourceFoundException ex) {
+        return new ExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ExceptionResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return new ExceptionResponse(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
     }
 }

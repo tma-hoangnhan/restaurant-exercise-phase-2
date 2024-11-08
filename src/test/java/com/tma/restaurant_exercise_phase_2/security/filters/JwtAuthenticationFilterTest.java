@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,11 +32,13 @@ class JwtAuthenticationFilterTest {
 
     @Mock private UserDetailsService userDetailsService;
     @Mock private JwtService jwtService;
+    @Mock private SecurityContext securityContext;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         jwtAuthenticationFilter = new JwtAuthenticationFilter(userDetailsService, jwtService);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @Test
@@ -123,14 +128,34 @@ class JwtAuthenticationFilterTest {
         UserDetails userDetails = User.builder().username("Username").password("123456").build();
 
         when(request.getHeader("Authorization")).thenReturn(token);
-        when(jwtService.extractUserEmail(token)).thenReturn(null);
+        when(jwtService.extractUserEmail(Mockito.anyString())).thenReturn("Username");
         when(userDetailsService.loadUserByUsername(Mockito.anyString())).thenReturn(userDetails);
-        when(jwtService.isTokenValid(token, userDetails)).thenReturn(false);
+        when(jwtService.isTokenValid("token", userDetails)).thenReturn(false);
 
         // when
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
         // then
+        verify(filterChain, times(1)).doFilter(request, response);
+    }
+
+    @Test
+    void doFilterInternal_validTokenType_NotNullEmail_validToken() throws ServletException, IOException {
+        // given
+        String token = "Bearer token";
+        UserDetails userDetails = User.builder().username("Username").password("123456").build();
+
+        when(request.getHeader("Authorization")).thenReturn(token);
+        when(jwtService.extractUserEmail(Mockito.anyString())).thenReturn("Username");
+        when(userDetailsService.loadUserByUsername(Mockito.anyString())).thenReturn(userDetails);
+        when(jwtService.isTokenValid("token", userDetails)).thenReturn(true);
+
+        // when
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+
+        // then
+        verify(jwtService).isTokenValid("token", userDetails);
+        verify(securityContext).setAuthentication(Mockito.any(UsernamePasswordAuthenticationToken.class));
         verify(filterChain, times(1)).doFilter(request, response);
     }
 }

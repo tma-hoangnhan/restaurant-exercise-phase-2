@@ -4,6 +4,7 @@ import com.tma.restaurant_exercise_phase_2.security.models.AuthenticationRequest
 import com.tma.restaurant_exercise_phase_2.security.models.AuthenticationResponse;
 import com.tma.restaurant_exercise_phase_2.security.models.RegisterRequest;
 import com.tma.restaurant_exercise_phase_2.security.services.AuthenticationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +21,13 @@ public class AuthenticationController {
 
     @PostMapping(path = "/authenticate")
     @ResponseStatus(HttpStatus.OK)
-    public AuthenticationResponse authenticate(@RequestBody AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(@RequestBody @Valid AuthenticationRequest request) {
         return authenticationService.authenticate(request);
     }
 
     @PostMapping(path = "/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthenticationResponse register(@RequestBody RegisterRequest request) {
+    public AuthenticationResponse register(@RequestBody @Valid RegisterRequest request) {
         return authenticationService.register(request);
     }
 }
