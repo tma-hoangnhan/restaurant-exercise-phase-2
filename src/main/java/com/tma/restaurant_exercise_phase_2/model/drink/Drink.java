@@ -37,6 +37,7 @@ public abstract class Drink extends Item {
                 .description(getDescription())
                 .img(getImg())
                 .price(getPrice())
+                .quantity(getQuantity())
                 .state(getState())
                 .volume(getVolume())
                 .type(getType())

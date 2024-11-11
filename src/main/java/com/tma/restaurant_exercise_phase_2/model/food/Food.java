@@ -24,14 +24,14 @@ public abstract class Food extends Item {
 
     @Override
     public FoodDTO toDTO() {
-        return  FoodDTO
-                .builder()
+        return  FoodDTO.builder()
                 .id(getId())
                 .name(getName())
                 .description(getDescription())
                 .img(getImg())
                 .price(getPrice())
                 .state(getState())
+                .quantity(getQuantity())
                 .type(getType())
                 .build();
     }
