@@ -10,14 +10,14 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class ItemDTO {
-    private int id;
-    private String name;
-    private String description;
-    private String img;
-    private double price;
-    private String type;
-    private int state;
-    private int quantity;
-    private int volume;
-    private boolean isDrink;
+    protected int id;
+    protected String name;
+    protected String description;
+    protected String img;
+    protected double price;
+    protected String type;
+    protected int state;
+    protected int quantity;
+    protected int volume;
+    protected boolean isDrink;
 }

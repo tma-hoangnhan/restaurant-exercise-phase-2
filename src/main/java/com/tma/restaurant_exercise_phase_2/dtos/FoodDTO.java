@@ -12,14 +12,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class FoodDTO extends ItemDTO {
-    private int id;
-    private String name;
-    private String description;
-    private String img;
-    private double price;
-    private String type;
-    private int state;
-
     public Food toEntity() {
         Food food = FactoryProvider.getInstance().getFoodFactory(getType()).createFood();
         food.setId(getId());
