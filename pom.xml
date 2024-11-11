@@ -11,7 +11,7 @@
 	<groupId>com.tma</groupId>
 	<artifactId>restaurant-exercise-phase-2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>restaurant-exercise-phase-2</name>
 	<description>Restaurant Project for TMA Probation</description>
 	<url/>
