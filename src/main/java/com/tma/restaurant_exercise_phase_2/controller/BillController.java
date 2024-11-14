@@ -7,6 +7,7 @@ import com.tma.restaurant_exercise_phase_2.model.bill.Bill;
 import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.service.BillService;
 import com.tma.restaurant_exercise_phase_2.service.OrderItemService;
+import com.tma.restaurant_exercise_phase_2.utils.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class BillController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CollectionResponse<BillDTO> getAllBills(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int perPage) {
-        if (page < 1 || perPage <1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
+        if (page < 1 || perPage <1) throw new InvalidParameterException(MessageUtils.INVALID_PAGINATION);
 
         return billService.getAllBills(page, perPage);
     }
