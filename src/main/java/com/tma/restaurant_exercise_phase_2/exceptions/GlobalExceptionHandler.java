@@ -1,6 +1,7 @@
 package com.tma.restaurant_exercise_phase_2.exceptions;
 
 import io.jsonwebtoken.JwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -13,10 +14,11 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.security.InvalidParameterException;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ExceptionResponse handleException(Exception ex) {
-        ex.printStackTrace();
+        log.trace("{}: ", ex.getClass(), ex);
         return new ExceptionResponse("INTERNAL SERVER ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
