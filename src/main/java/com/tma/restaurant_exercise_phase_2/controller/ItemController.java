@@ -6,6 +6,7 @@ import com.tma.restaurant_exercise_phase_2.dtos.CollectionResponse;
 import com.tma.restaurant_exercise_phase_2.dtos.ItemDTO;
 import com.tma.restaurant_exercise_phase_2.model.Item;
 import com.tma.restaurant_exercise_phase_2.service.ItemService;
+import com.tma.restaurant_exercise_phase_2.utils.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -25,21 +26,21 @@ public class ItemController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CollectionResponse<ItemDTO> getAllItems(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int perPage) {
-        if (page < 1 || perPage < 1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
+        if (page < 1 || perPage < 1) throw new InvalidParameterException(MessageUtils.INVALID_PAGINATION);
         return itemService.getAllItems(page, perPage);
     }
 
     @GetMapping(path = "/drink-menu")
     @ResponseStatus(HttpStatus.OK)
     public CollectionResponse<ItemDTO> getDrinkMenu(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int perPage) {
-        if (page < 1 || perPage < 1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
+        if (page < 1 || perPage < 1) throw new InvalidParameterException(MessageUtils.INVALID_PAGINATION);
         return itemService.getDrinkMenu(page, perPage);
     }
 
     @GetMapping(path = "/food-menu")
     @ResponseStatus(HttpStatus.OK)
     public CollectionResponse<ItemDTO> getFoodMenu(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int perPage) {
-        if (page < 1 || perPage < 1) throw new InvalidParameterException("page AND perPage MUST BE LARGER THAN 0");
+        if (page < 1 || perPage < 1) throw new InvalidParameterException(MessageUtils.INVALID_PAGINATION);
         return itemService.getFoodMenu(page, perPage);
     }
 

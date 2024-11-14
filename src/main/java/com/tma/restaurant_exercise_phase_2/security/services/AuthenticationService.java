@@ -61,14 +61,14 @@ public class AuthenticationService {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
-                        new String(request.getPassword())
+                        String.valueOf(request.getPassword())
                 )
         );
 
         User user = userService.getUserByEmail(request.getEmail());
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
-                .password(new String(user.getPassword()))
+                .password(String.valueOf(request.getPassword()))
                 .build();
 
         String accessToken = jwtService.generateToken(userDetails);

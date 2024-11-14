@@ -44,7 +44,7 @@ public class ItemService {
                 .perPage(itemPage.getSize())
                 .totalPages(itemPage.getTotalPages())
                 .totalItems(itemPage.getTotalElements())
-                .contents(itemPage.stream().map(Item::toDTO).collect(Collectors.toList()))
+                .contents(itemPage.stream().map(Item::toDTO).toList())
                 .build();
     }
 

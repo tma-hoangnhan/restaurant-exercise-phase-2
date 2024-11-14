@@ -16,8 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Collectors;
-
 @Service
 public class BillService {
     private final BillRepository billRepository;
@@ -46,7 +44,7 @@ public class BillService {
                 .perPage(billPage.getSize())
                 .totalPages(billPage.getTotalPages())
                 .totalItems(billPage.getTotalElements())
-                .contents(billPage.stream().map(Bill::toDTO).collect(Collectors.toList()))
+                .contents(billPage.stream().map(Bill::toDTO).toList())
                 .build();
     }
 
