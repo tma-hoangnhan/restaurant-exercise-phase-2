@@ -34,7 +34,7 @@ public class ApplicationConfig {
 
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getEmail())
-                    .password(new String(user.getPassword()))
+                    .password(String.valueOf(user.getPassword()))
                     .build();
         };
     }
